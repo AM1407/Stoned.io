@@ -1,8 +1,13 @@
 
 <nav>
-    <a href="index.php"><img src="rock-svgrepo-com.svg" alt="logo" width="60px"><a>
+    <a href="index.php"><img src="rock-svgrepo-com.svg" alt="logo" width="60px"></a>
     <h1>Stoned.io</h1>
-    <a href="cart.php"><i class="bi bi-basket2 basket-logo"></i></a>
+    <div class="cart-container">
+        <a href="cart.php"><i class="bi bi-basket2 basket-logo"></i><span class="cart-count">1</span></a>
+        <div class="cart-dropdown">
+            <?php include 'cart-dropdown.php'; ?>
+        </div>
+    </div>
 </nav>
 
 <style>
@@ -55,5 +60,9 @@ nav h1 {
     color: #1c1917;
     box-shadow: 0 0 14px rgba(201, 169, 110, 0.6);
     transform: scale(1.12);
+}
+
+.cart-count{
+    margin-left: 10px
 }
 </style>

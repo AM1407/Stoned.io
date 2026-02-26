@@ -13,3 +13,23 @@
         a:hover {
             color: #e8dfc8;
         }
+
+        .cart-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #141210;
+            border: 1px solid #302d2d;
+            width: 250px;
+            padding: 15px;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Alleen tonen als je met de muis over de container gaat */
+        .cart-container:hover .cart-dropdown {
+            display: block !important;
+            visibility: visible;
+            opacity: 1;
+        }
+
