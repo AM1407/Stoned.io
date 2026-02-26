@@ -78,7 +78,22 @@ wackywebshop/
 - [ ] Order confirmation emails (with your rock attached)
 - [ ] Rock customisation for tier 3+
 
-## 🚀 Getting Started
+## � Future Possibilities
+
+### Rock Trading Card Game (TCG)
+
+Since every rock already gets a unique character with a name, backstory, and personality, a natural next step would be turning them into **collectible trading cards**. Each rock could receive:
+
+- **Stats** — Attack, Defence, Weight, Shininess, Charisma
+- **Abilities** — Unique powers based on their assigned character (e.g. *Sylvester Stallstone* gets "Rocky Punch", *Dwayne 'The Rock' Johnson* gets "People's Elbow")
+- **Rarity tiers** — Common pebbles, rare boulders, legendary monoliths
+- **Card art** — Styled portraits of each rock character
+
+Players could collect, compare, and (eventually) battle their rocks against friends' collections. Think Pokémon cards, but significantly more geological.
+
+This would add a whole new layer to the gifting experience — you're not just buying someone a picture of a rock, you're giving them a **battle-ready companion**.
+
+## �🚀 Getting Started
 
 ```bash
 # Clone the repo
