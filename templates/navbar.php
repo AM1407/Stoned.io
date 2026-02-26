@@ -1,6 +1,6 @@
 
 <nav>
-    <img src="rock-svgrepo-com.svg" alt="logo" width="60px">
+    <a href="index.php"><img src="rock-svgrepo-com.svg" alt="logo" width="60px"><a>
     <h1>Stoned.io</h1>
     <a href="cart.php"><i class="bi bi-basket2 basket-logo"></i></a>
 </nav>

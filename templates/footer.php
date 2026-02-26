@@ -20,8 +20,8 @@
             <h4>Legal</h4>
             <ul>
                 <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms of Service</a></li>
-                <li><a href="#">Refund Policy</a></li>
+                <li><a href="tos.php">Terms of Service</a></li>
+                <li><a href="refund.php">Refund Policy</a></li>
                 <li><a href="#">Cookie Settings</a></li>
             </ul>
         </div>
