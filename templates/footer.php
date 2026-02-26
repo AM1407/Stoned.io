@@ -12,7 +12,7 @@
                 <li><a href="index.php">Shop</a></li>
                 <li><a href="cart.php">Basket</a></li>
                 <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="contact.php">Contact</a></li>
             </ul>
         </div>
 
@@ -28,8 +28,8 @@
 
         <div class="footer-contact">
             <h4>Get in Touch</h4>
-            <p><i class="bi bi-envelope"></i> rocks@stoned.io</p>
-            <p><i class="bi bi-telephone"></i> +1 (800) ROCK-ON</p>
+            <a href="contact.php" aria-label="Email"><i class="bi bi-envelope"></i> rocks@stoned.io</a>
+            <a href="contact.php" aria-label="Phone"><i class="bi bi-telephone"></i> +1 (800) ROCK-ON</a>
             <div class="socials">
                 <a href="reroute.php" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
                 <a href="reroute.php" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
@@ -126,6 +126,20 @@
         gap: 7px;
         margin-bottom: 5px;
         font-size: 0.83rem;
+    }
+
+    .footer-contact > a {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 5px;
+        font-size: 0.83rem;
+        color: #9e9080;
+        transition: color 0.2s ease;
+    }
+
+    .footer-contact > a:hover {
+        color: #c9a96e;
     }
 
     .footer-contact i {

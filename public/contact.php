@@ -22,9 +22,9 @@
     <?php include '../templates/navbar.php'; ?>
 
     <div class="reroute-container">
-        <i class="bi bi-geo-alt-fill reroute-icon"></i>
-        <p>Yeah, we weren't going to build socials pages for rocks. That would be absurd. Instead enjoy this image of a cool rock.</p>
-        <img src="coolrocklol.png">
+        <i class="bi bi-emoji-expressionless-fill emoji"></i>
+        <p>Are you really going to complain about pictures of rocks?!</p>
+        <img src="Funny Worried Face Meme.jpg">
         <a href="index.php" class="reroute-btn"><i class="bi bi-arrow-left"></i> Back to the Rocks</a>
     </div>
 
@@ -74,6 +74,12 @@
             background-color: #c9a96e;
             color: #1c1917;
             box-shadow: 0 0 12px rgba(201, 169, 110, 0.4);
+        }
+
+        .emoji {
+            font-size: 3rem;
+            color: #c9a96e;
+            opacity: 0.7;
         }
     </style>
 </body>
