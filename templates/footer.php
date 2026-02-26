@@ -11,7 +11,7 @@
             <ul>
                 <li><a href="index.php">Shop</a></li>
                 <li><a href="cart.php">Basket</a></li>
-                <li><a href="#">About Us</a></li>
+                <li><a href="about.php">About Us</a></li>
                 <li><a href="contact.php">Contact</a></li>
             </ul>
         </div>
@@ -19,10 +19,10 @@
         <div class="footer-links">
             <h4>Legal</h4>
             <ul>
-                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="privacy.php">Privacy Policy</a></li>
                 <li><a href="tos.php">Terms of Service</a></li>
                 <li><a href="refund.php">Refund Policy</a></li>
-                <li><a href="#">Cookie Settings</a></li>
+                <li><a href="cookie.php">Cookie Settings</a></li>
             </ul>
         </div>
 
