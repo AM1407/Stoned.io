@@ -1,0 +1,15 @@
+{
+    "name": "aless/wackywebshop",
+    "autoload": {
+        "psr-4": {
+            "Aless\\Wackywebshop\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "AMicciche",
+            "email": "alessiomicciche@outlook.com"
+        }
+    ],
+    "require": {}
+}
