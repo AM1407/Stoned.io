@@ -1,4 +1,4 @@
-
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +24,7 @@
     <div class="reroute-container">
         <i class="bi bi-emoji-expressionless-fill emoji"></i>
         <p>Are you really going to complain about pictures of rocks?!</p>
-        <img src="Funny Worried Face Meme.jpg">
+        <img src="img/Funny Worried Face Meme.jpg">
         <a href="index.php" class="reroute-btn"><i class="bi bi-arrow-left"></i> Back to the Rocks</a>
     </div>
 

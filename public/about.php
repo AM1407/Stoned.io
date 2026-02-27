@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +26,7 @@
             <h2>This is me <i class="bi bi-arrow-right"></i></h2>
         </div>
         <div class="about-hero-image">
-            <img src="61qBWrYGD8S.jpg" alt="Picture of the founder">
+            <img src="img/61qBWrYGD8S.jpg" alt="Picture of the founder">
         </div>
     </section>
 

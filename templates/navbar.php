@@ -1,9 +1,9 @@
 
 <nav>
-    <a href="index.php"><img src="rock-svgrepo-com.svg" alt="logo" width="60px"></a>
+    <a href="index.php"><img src="img/rock-svgrepo-com.svg" alt="logo" width="60px"></a>
     <h1>Stoned.io</h1>
     <div class="cart-container">
-        <a href="cart.php"><i class="bi bi-basket2 basket-logo"></i><span class="cart-count">1</span></a>
+        <a href="cart.php"><i class="bi bi-basket2 basket-logo"></i></a>
         <div class="cart-dropdown">
             <?php include 'cart-dropdown.php'; ?>
         </div>

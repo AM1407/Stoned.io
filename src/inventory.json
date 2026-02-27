@@ -1,188 +1,248 @@
-[
+{
+    "products":[
     {
         "id": "rock_1",
         "name": "Kevin",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock1.png"
     },
     {
         "id": "rock_2",
         "name": "Greg",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock2.png"
     },
     {
         "id": "rock_3",
         "name": "The Red Raptor",
         "tier": "T2",
-        "backstory": "I could tell you it's a rock from Mars but we both know it's something AI made. Nevermind, it's a rock from Mars. Trust me. It really is, ask Dave he generated, fuck no he stole it from the space museum himself. Origin: Houston, NASA museum. Caution: might contain traces of Cheeto dust from Dave's fingers. Oh and Martian Dust. Which is basically the same."
+        "backstory": "I could tell you it's a rock from Mars but we both know it's something AI made. Nevermind, it's a rock from Mars. Trust me. It really is, ask Dave he generated, fuck no he stole it from the space museum himself. Origin: Houston, NASA museum. Caution: might contain traces of Cheeto dust from Dave's fingers. Oh and Martian Dust. Which is basically the same.",
+        "image": "rock3.png"
     },
     {
         "id": "rock_4",
         "name": "Danny",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock4.png"
     },
     {
         "id": "rock_5",
         "name": "Duke",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock5.png"
     },
     {
         "id": "rock_6",
         "name": "Fuzzy Craig",
         "tier": "T2",
-        "backstory": "So Craig, Fuzzy for the friends, was living in a humid cave until it flooded. (probably why it was humid) He grew this nasty green stuff on his face. We have been begging him to take a shower but hey we already got him to do his gravel on the toilet. Wear gloves when handling him or you'll end up like the guy that found him. Well he didn't get sick or something, he just had dirty hands. Origin: Some filthy cave, how am i supposed to know. Ask Craig FFS."
+        "backstory": "So Craig, Fuzzy for the friends, was living in a humid cave until it flooded. (probably why it was humid) He grew this nasty green stuff on his face. We have been begging him to take a shower but hey we already got him to do his gravel on the toilet. Wear gloves when handling him or you'll end up like the guy that found him. Well he didn't get sick or something, he just had dirty hands. Origin: Some filthy cave, how am i supposed to know. Ask Craig FFS.",
+        "image": "rock6.png"
     },
     {
         "id": "rock_7",
         "name": "Gladys",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock7.png"
     },
     {
         "id": "rock_8",
         "name": "Julian \"The Great\" Goolie",
         "tier": "T3",
-        "backstory": "So Julian has gotten a little big for his britches. Sure his tag is \"The Great\" but his last name is Goolie, GOOLIE. You know a goolie is right? No?! Well it's Aussie slang for a \"pebble\". A fucking pebble, you know that's a derogatory term for us rocks right. *scoff* and he thinks he is \"Great\". Origin: Some posh backyard in England around high-tea because he was cranky when we took him since he didn't get his scones."
+        "backstory": "So Julian has gotten a little big for his britches. Sure his tag is \"The Great\" but his last name is Goolie, GOOLIE. You know a goolie is right? No?! Well it's Aussie slang for a \"pebble\". A fucking pebble, you know that's a derogatory term for us rocks right. *scoff* and he thinks he is \"Great\". Origin: Some posh backyard in England around high-tea because he was cranky when we took him since he didn't get his scones.",
+        "image": "rock8.png"
     },
     {
         "id": "rock_9",
         "name": "Rock \"The Dwayne\" Rockson",
         "tier": "T2",
-        "backstory": "So he was found after he got his ass kicked in the RRW (Rough Rock Wrestling). He thought he could square up (get it because he has a square shape) against a giant boulder. Got his ass handed to him. Luckily he is hard as a rock. Okay that last pun was horrible. But so was his RRW appearance so who cares."
+        "backstory": "So he was found after he got his ass kicked in the RRW (Rough Rock Wrestling). He thought he could square up (get it because he has a square shape) against a giant boulder. Got his ass handed to him. Luckily he is hard as a rock. Okay that last pun was horrible. But so was his RRW appearance so who cares.",
+        "image": "rock9.png"
     },
     {
         "id": "rock_10",
         "name": "Queen Azure",
         "tier": "T4",
-        "backstory": "Please may i have your attention as the queen passes by! So Queen Azure fell off of the necklace of Karen at Walmart. We have absolutely no idea who declared her queen or what she is even queen of but just entertain it or she throws another tantrum. She keeps calling the guards on us but she doesn't have any. Whats that about?"
+        "backstory": "Please may i have your attention as the queen passes by! So Queen Azure fell off of the necklace of Karen at Walmart. We have absolutely no idea who declared her queen or what she is even queen of but just entertain it or she throws another tantrum. She keeps calling the guards on us but she doesn't have any. Whats that about?",
+        "image": "rock10.png"
     },
     {
         "id": "rock_11",
         "name": "Lord Titus of Emerald",
         "tier": "T4",
-        "backstory": "Ugh, Lord Titus. Or as we call him, turd Titus. He is from a wealthy family. He once sat on a Fabergé egg. yes sat, he fell off 5 minutes after they set him in there. His family are a bunch of high class posers. Didn't even get to Russia on his egg, poor bastard."
+        "backstory": "Ugh, Lord Titus. Or as we call him, turd Titus. He is from a wealthy family. He once sat on a Fabergé egg. yes sat, he fell off 5 minutes after they set him in there. His family are a bunch of high class posers. Didn't even get to Russia on his egg, poor bastard.",
+        "image": "rock11.png"
     },
     {
         "id": "rock_12",
         "name": "Professor Dmitri Pebblovsky",
         "tier": "T3",
-        "backstory": "So Dmitri is a sensitive case. He is an absolute brilliant one but he had a lab accident several years ago. Now he has this constant green glow and nobody wants to get close to him. We aren't sure if he is radioactive or toxic but why risk it. I already have enough potassium-40 isotopes inside me, i don't need whatever Dmitri has."
+        "backstory": "So Dmitri is a sensitive case. He is an absolute brilliant one but he had a lab accident several years ago. Now he has this constant green glow and nobody wants to get close to him. We aren't sure if he is radioactive or toxic but why risk it. I already have enough potassium-40 isotopes inside me, i don't need whatever Dmitri has.",
+        "image": "rock12.png"
     },
     {
         "id": "rock_13",
         "name": "Candice Blue",
         "tier": "T4",
-        "backstory": "So you see Candice exposing her slit for everyone to see? Well i don't need to elaborate on how she makes her money. But hey what she shoves in her cavity is not my issue. Just use protection please or you might get pubic gravel."
+        "backstory": "So you see Candice exposing her slit for everyone to see? Well i don't need to elaborate on how she makes her money. But hey what she shoves in her cavity is not my issue. Just use protection please or you might get pubic gravel.",
+        "image": "rock13.png"
     },
     {
         "id": "rock_14",
         "name": "Freddy",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock14.png"
     },
     {
         "id": "rock_15",
         "name": "Little Dan",
         "tier": "T2",
-        "backstory": "Little Dan is an orphan pebble. He was left behind in a fishbowl after the rest of the substrate was thrown out. We took him in, dried him off and then put him in our tank. Guys he is a rock, not a real child. Get your shit together. My betta loves swimming into him."
+        "backstory": "Little Dan is an orphan pebble. He was left behind in a fishbowl after the rest of the substrate was thrown out. We took him in, dried him off and then put him in our tank. Guys he is a rock, not a real child. Get your shit together. My betta loves swimming into him.",
+        "image": "rock15.png"
     },
     {
         "id": "rock_16",
         "name": "Jennifer",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock16.png"
     },
     {
         "id": "rock_17",
         "name": "Ben and Alex",
         "tier": "T3",
-        "backstory": "So Ben and Alex are twin rocks. Not identical though, Ben is the funny one and Alex has the looks but I'm not telling who is who, figure it out. Also don't try to separate them or their tears of mercury start flowing again. Wimps."
+        "backstory": "So Ben and Alex are twin rocks. Not identical though, Ben is the funny one and Alex has the looks but I'm not telling who is who, figure it out. Also don't try to separate them or their tears of mercury start flowing again. Wimps.",
+        "image": "rock17.png"
     },
     {
         "id": "rock_18",
         "name": "Consuela de la Tortilla",
         "tier": "T4",
-        "backstory": "Consuela has 2 pebbles and 4 grand-pebbles and has been married to her stoic boulder for 1952 years already. In 48 years they celebrate their concrete anniversary. We are so excited for them. She is from Mexican decent and is from a quartz family. That didn't land nice when she married an agate. Don't bring it up during the anniversary, it's still a touchy subject. Mixed marriages and all that. Yikes!"
+        "backstory": "Consuela has 2 pebbles and 4 grand-pebbles and has been married to her stoic boulder for 1952 years already. In 48 years they celebrate their concrete anniversary. We are so excited for them. She is from Mexican decent and is from a quartz family. That didn't land nice when she married an agate. Don't bring it up during the anniversary, it's still a touchy subject. Mixed marriages and all that. Yikes!",
+        "image": "rock18.png"
     },
     {
         "id": "rock_19",
         "name": "Bill",
         "tier": "T2",
-        "backstory": "Bill is so cool. Do you know he was once fired from the barrel of a musket? He was used as an emergency projectile. Thank you for your service lieutenant Bill! Origin: I think Dave stole him from the natural history museum. Fuck i need to make a phonecall. DAVE GET OVER HERE!!!"
+        "backstory": "Bill is so cool. Do you know he was once fired from the barrel of a musket? He was used as an emergency projectile. Thank you for your service lieutenant Bill! Origin: I think Dave stole him from the natural history museum. Fuck i need to make a phonecall. DAVE GET OVER HERE!!!",
+        "image": "rock19.png"
     },
     {
         "id": "rock_20",
         "name": "Vlad \"The Terrible\"",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock20.png"
     },
     {
         "id": "rock_21",
         "name": "Rougina Chantarelle",
         "tier": "T4",
-        "backstory": "Rougina is french, from the Bordeaux region. Well she drinks a lot of Bordeaux in France. We have done several interventions and sent her to rehab twice but she rolls out of there like the boulder chasing Indiana Jones. Well waddles out of there. I haven't seen her waddle straight since the French Revolution. Being used as Napoleon's paperweight must've been horrible."
+        "backstory": "Rougina is french, from the Bordeaux region. Well she drinks a lot of Bordeaux in France. We have done several interventions and sent her to rehab twice but she rolls out of there like the boulder chasing Indiana Jones. Well waddles out of there. I haven't seen her waddle straight since the French Revolution. Being used as Napoleon's paperweight must've been horrible.",
+        "image": "rock21.png"
     },
     {
         "id": "rock_22",
         "name": "Spud",
         "tier": "T1",
-        "backstory": null
+        "backstory": null,
+        "image": "rock22.png"
     },
     {
         "id": "rock_23",
         "name": "Tito",
         "tier": "T3",
-        "backstory": "Tito is Hawaiian. Well he says he is, he was laying next to a pineapple when i picked him up. Outside the grocery store in the snow, in Stockholm. Couldn't be farther from Hawaii than that. He keeps shouting Aloha and Mahalo, I'm going crazy. So buyer beware he is like a parrot that doesn't shut up but without the nice plumage."
+        "backstory": "Tito is Hawaiian. Well he says he is, he was laying next to a pineapple when i picked him up. Outside the grocery store in the snow, in Stockholm. Couldn't be farther from Hawaii than that. He keeps shouting Aloha and Mahalo, I'm going crazy. So buyer beware he is like a parrot that doesn't shut up but without the nice plumage.",
+        "image": "rock23.png"
     },
     {
         "id": "rock_24",
         "name": "Bruce",
         "tier": "T3",
-        "backstory": "Bruce, as you see from his veins, spends his day lifting weights. And using performance enhancing cement. Don't be faked by those veins they are artificial. And now he cannot even scratch his crack because of his bulk. Well lesson learned i guess. Well until 13pm then he gets his next cement injection."
+        "backstory": "Bruce, as you see from his veins, spends his day lifting weights. And using performance enhancing cement. Don't be faked by those veins they are artificial. And now he cannot even scratch his crack because of his bulk. Well lesson learned i guess. Well until 13pm then he gets his next cement injection.",
+        "image": "rock24.png"
     },
     {
         "id": "rock_25",
         "name": "Dumplin",
         "tier": "T2",
-        "backstory": "A rock from the continent of Japan. Named after the famous dish. Luckily she isn't from the UK, if she were named after a dish from there her name would be \"Bland and Flavourless\". Don't bite her though, she might have a tasty filling, idk but we don't reimburse your dental work."
+        "backstory": "A rock from the continent of Japan. Named after the famous dish. Luckily she isn't from the UK, if she were named after a dish from there her name would be \"Bland and Flavourless\". Don't bite her though, she might have a tasty filling, idk but we don't reimburse your dental work.",
+        "image": "rock25.png"
     },
     {
         "id": "rock_26",
         "name": null,
         "tier": "T1",
-        "backstory": "You realise you just paid for this right. I mean a round thing on a screen. You know there is free porn right? Go do something that actually helps mankind, waste of oxygen."
+        "backstory": "You realise you just paid for this right. I mean a round thing on a screen. You know there is free porn right? Go do something that actually helps mankind, waste of oxygen.",
+        "image": "rock26.png"
     },
     {
         "id": "rock_27",
         "name": "ET",
         "tier": "T2",
-        "backstory": "This is a movie prop. I called him ET but he is actually from a movie called Dave 'n the 2 busties. DAVE? GET THE FUCK AWAY FROM MY KEYBOARD! So this one is obviously not called ET and he didn't come from the set of a weird porn movie. Well i guess that's what Dave 'n, I'm not repeating that, is. I have to go toss a rock at Dave, sorry for the impropriety."
+        "backstory": "This is a movie prop. I called him ET but he is actually from a movie called Dave 'n the 2 busties. DAVE? GET THE FUCK AWAY FROM MY KEYBOARD! So this one is obviously not called ET and he didn't come from the set of a weird porn movie. Well i guess that's what Dave 'n, I'm not repeating that, is. I have to go toss a rock at Dave, sorry for the impropriety.",
+        "image": "rock27.png"
     },
     {
         "id": "rock_28",
         "name": "Shaquille O'Obsidian",
         "tier": "T4",
-        "backstory": "Giant of a shard. Absolutely the MVP of the RBA (Rocky Basketball Association). Because of him they had to change the material of the pitch, scratches everywhere."
+        "backstory": "Giant of a shard. Absolutely the MVP of the RBA (Rocky Basketball Association). Because of him they had to change the material of the pitch, scratches everywhere.",
+        "image": "rock28.png"
     },
     {
         "id": "rock_29",
         "name": "Everest",
         "tier": "T3",
-        "backstory": "So Everest. He was found in a little gift shop in Nepal. If you squint really hard at something else then he still doesn't resemble the Mount Everest. Yet they still tried to sell him for 30$ as a miniature Everest. Well I'm selling a picture of him for slightly less and you just bought it. So i still lost money? Fuck. DAVE I'LL NEVER LISTEN TO YOUR \"INVESTMENT OPPORTUNITIES\" ANYMORE! I need to go and call my bank and block that transaction. Fuuuuck i paid in cash. DAVE you owe me 30$."
+        "backstory": "So Everest. He was found in a little gift shop in Nepal. If you squint really hard at something else then he still doesn't resemble the Mount Everest. Yet they still tried to sell him for 30$ as a miniature Everest. Well I'm selling a picture of him for slightly less and you just bought it. So i still lost money? Fuck. DAVE I'LL NEVER LISTEN TO YOUR \"INVESTMENT OPPORTUNITIES\" ANYMORE! I need to go and call my bank and block that transaction. Fuuuuck i paid in cash. DAVE you owe me 30$.",
+        "image": "rock29.png"
     },
     {
         "id": "rock_30",
         "name": null,
         "tier": "T2",
-        "backstory": "Yeah it's a grape, i know. Fucking Dave snuck that sucker in here. I already got your money but I'll fire Dave anyway. It's the 3rd time this week. You don't want to know what he snuck in here earlier. Hint: it might've come out of a dog's bum but it could've been a very large cat."
+        "backstory": "Yeah it's a grape, i know. Fucking Dave snuck that sucker in here. I already got your money but I'll fire Dave anyway. It's the 3rd time this week. You don't want to know what he snuck in here earlier. Hint: it might've come out of a dog's bum but it could've been a very large cat.",
+        "image": "rock30.png"
     },
     {
         "id": "rock_31",
-        "name": "DAVE!",
+        "name": null,
         "tier": "T2",
-        "backstory": "We are not this kind of STONED. Well he might be but my lawyers want me to explicitly state that we do not sell these products as they are highly illegal (but in case you want some I'll send you Dave's number). Just make sure to not look him directly in the eye. What the fuck was i on when i hired him. DAVE what was in those brownies when you came in for your hiring talks?"
+        "backstory": "We are not this kind of STONED. Well he might be but my lawyers want me to explicitly state that we do not sell these products as they are highly illegal (but in case you want some I'll send you Dave's number). Just make sure to not look him directly in the eye. What the fuck was i on when i hired him. DAVE what was in those brownies when you came in for your hiring talks?",
+        "image": "rock31.png"
     }
-]
+],
+
+"customization_options": {
+    "hats": [
+        {"id": "tophat", "name": "Gentleman's Hat", "image": "tophat.svg"},
+        {"id": "summerhat", "name": "Summer Hat", "image": "summerhat.svg"},
+        {"id": "pumpkinhat", "name": "Pumkin Hat", "image": "pumpkinhat.svg"},
+        {"id": "partyhat", "name": "Birthday Hat", "image": "party1.svg"},
+        {"id": "collegehat", "name": "Graduation Hat", "image": "collegehat.svg"},
+        {"id": "beanie", "name": "Winter Beanie", "image": "beanie.svg"}
+    ],
+
+    "eyes": [
+        {"id": "eyes", "name": "Eyes_1", "image": "eyes.svg"},
+        {"id": "eyes_1", "name": "Eyes_2", "image": "eyes1.svg"},
+        {"id": "eyes2", "name": "Eyes_3", "image": "eyes2.svg"},
+        {"id": "eyes3", "name": "Eyes_4", "image": "eyes3.svg"},
+        {"id": "eyes4", "name": "Eyes_5", "image": "eyes4.svg"}
+    ], 
+
+    "moustaches": [
+        {"id": "moustache", "name": "Moustache_1", "image": "moustache1.svg"},
+        {"id": "moustache1", "name": "Moustache_2", "image": "moustache2.svg"},
+        {"id": "moustache2", "name": "Moustache_3", "image": "moustache3.svg"},
+        {"id": "moustache3", "name": "Moustache_4", "image": "moustache4.svg"},
+        {"id": "moustache4", "name": "Moustache_5", "image": "moustache5.svg"}
+    ]
+}
+}
