@@ -151,7 +151,10 @@
         .kofi-note { display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: #9e9080; }
         .kofi-note i { color: #FF5E5B; font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
         .kofi-note strong { color: #e8dfc8; }
-        .btn-kofi-cart { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #FF5E5B; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: opacity 0.2s; width: 100%; }
+        .kofi-item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 8px 0; border-top: 1px solid rgba(255,94,91,0.12); }
+        .kofi-item-label { font-size: 0.85rem; color: #e8dfc8; }
+        .kofi-item-label em { color: #c9a96e; font-style: normal; }
+        .btn-kofi-cart { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #FF5E5B; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: opacity 0.2s; white-space: nowrap; }
         .btn-kofi-cart:hover { opacity: 0.88; }
 
         /* ── Empty Cart ── */
@@ -382,17 +385,25 @@
                     </div>
                 </div>
 
-                <!-- ── Ko-fi Payment ── -->
+                <!-- ── Ko-fi Payment — one row per item ── -->
                 <div class="kofi-checkout">
                     <div class="kofi-note">
                         <i class="bi bi-cup-hot-fill"></i>
-                        <span>We use <strong>Ko-fi</strong> for payment. Clicking <em>Place Order</em> will open Ko-fi in a new tab so you can pay while your order is saved.</span>
+                        <span>We use <strong>Ko-fi</strong> for payment. Each package has its own product page — clicking <em>Place Order</em> opens them for you.</span>
                     </div>
-                    <a class="btn-kofi-cart"
-                       href="https://ko-fi.com/stonedio"
-                       target="_blank" rel="noopener noreferrer">
-                        <i class="bi bi-cup-hot-fill"></i> Pay <?= $cartTotal ?>&#x20AC; on Ko-fi
-                    </a>
+                    <?php foreach ($cartDisplay as $ci): ?>
+                        <div class="kofi-item-row">
+                            <span class="kofi-item-label">
+                                <strong><?= htmlspecialchars($ci['label']) ?></strong>
+                                <em>&mdash; <?= $ci['price'] ?>&#x20AC;</em>
+                            </span>
+                            <a class="btn-kofi-cart kofi-item-link"
+                               href="<?= htmlspecialchars($kofiLinks[$ci['tier']]) ?>"
+                               target="_blank" rel="noopener noreferrer">
+                                <i class="bi bi-cup-hot-fill"></i> Pay <?= $ci['price'] ?>&#x20AC;
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
 
                 <!-- Hidden canvas captures filled by JS on submit (T3 items) -->
@@ -578,34 +589,38 @@
             });
         });
 
-        // ── Form submit: capture T3 canvases before posting ────────────────
+        // ── Form submit: open Ko-fi tabs + capture T3 canvases before posting ────────────────
         const orderForm = document.getElementById('orderForm');
         if (orderForm) {
             orderForm.addEventListener('submit', async (e) => {
-                const inputs = orderForm.querySelectorAll('input[name^="canvas_capture"]');
-                if (!inputs.length) return; // no captures needed
+                const kofiLinks = orderForm.querySelectorAll('.kofi-item-link');
+                const captures  = orderForm.querySelectorAll('input[name^="canvas_capture"]');
+
+                if (!kofiLinks.length && !captures.length) return; // nothing to do
 
                 e.preventDefault();
 
-                const kofiLink = orderForm.querySelector('.btn-kofi-cart');
-                if (kofiLink) window.open(kofiLink.href, '_blank');
+                // Open one Ko-fi tab per item
+                kofiLinks.forEach(link => window.open(link.href, '_blank'));
 
-                try {
-                    for (const input of inputs) {
-                        const canvasId  = input.id.replace('captureInput-', 'canvas-');
-                        const canvasEl  = document.getElementById(canvasId);
-                        const wrapEl    = canvasEl?.closest('.canvas-wrapper');
-                        if (!wrapEl) continue;
-
-                        deselectAll();
-                        const snap = await html2canvas(wrapEl, {
-                            backgroundColor: null, scale: 2,
-                            useCORS: true, allowTaint: true, logging: false
-                        });
-                        input.value = snap.toDataURL('image/png');
+                // Capture T3 canvases if any
+                if (captures.length) {
+                    try {
+                        for (const input of captures) {
+                            const canvasId = input.id.replace('captureInput-', 'canvas-');
+                            const canvasEl = document.getElementById(canvasId);
+                            const wrapEl   = canvasEl?.closest('.canvas-wrapper');
+                            if (!wrapEl) continue;
+                            deselectAll();
+                            const snap = await html2canvas(wrapEl, {
+                                backgroundColor: null, scale: 2,
+                                useCORS: true, allowTaint: true, logging: false
+                            });
+                            input.value = snap.toDataURL('image/png');
+                        }
+                    } catch (err) {
+                        console.warn('Canvas capture failed, continuing anyway:', err);
                     }
-                } catch (err) {
-                    console.warn('Canvas capture failed, continuing anyway:', err);
                 }
 
                 orderForm.submit();

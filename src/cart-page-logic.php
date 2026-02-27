@@ -41,6 +41,15 @@ $tierMeta = [
     ],
 ];
 
+// ─── Ko-fi per-tier product links ────────────────────────────────
+// Replace each placeholder with the real Ko-fi product/shop URL
+$kofiLinks = [
+    1 => 'https://ko-fi.com/s/4e478315d2',
+    2 => 'https://ko-fi.com/s/19e52178cc',
+    3 => 'https://ko-fi.com/s/92768de6b6',
+    4 => 'https://ko-fi.com/s/f5c13a1e85',
+];
+
 // ─── Load inventory ──────────────────────────────────────────────
 $inventoryPath = __DIR__ . '/inventory.json';
 $inventoryRaw  = file_get_contents($inventoryPath);
@@ -163,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                 'total'           => $cartTotal,
                 'custom_names'    => $_POST['custom_name'] ?? [],
                 'canvas_captures' => $_POST['canvas_capture'] ?? [],
+                'kofi_links'      => $kofiLinks,
                 'placed_at'       => date('Y-m-d H:i:s'),
             ];
             $_SESSION['cart'] = [];

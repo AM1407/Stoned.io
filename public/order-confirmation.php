@@ -19,6 +19,7 @@ $giftMsg      = $order['gift_message']   ?? '';
 
 $hasCertItems   = !empty($orderItems);
 $canvasCaptures = $order['canvas_captures'] ?? [];
+$kofiLinks      = $order['kofi_links']      ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,6 +87,11 @@ $canvasCaptures = $order['canvas_captures'] ?? [];
                     padding: 13px 18px; border-radius: 8px; border: none; cursor: pointer;
                     text-decoration: none; transition: opacity 0.2s, box-shadow 0.2s; }
         .btn-kofi:hover { opacity: 0.88; box-shadow: 0 4px 18px rgba(255,94,91,0.35); }
+        .kofi-item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+                         flex-wrap: wrap; padding: 10px 0; border-top: 1px solid rgba(255,94,91,0.12); }
+        .kofi-item-row:first-of-type { border-top: none; }
+        .kofi-item-label { font-size: 0.85rem; color: #e8dfc8; }
+        .kofi-item-label em { color: #c9a96e; font-style: normal; }
 
         /* ── Certificates ── */
         .cert-item { display: flex; gap: 16px; align-items: center; padding: 14px 0; flex-wrap: wrap; }
@@ -192,12 +198,23 @@ $canvasCaptures = $order['canvas_captures'] ?? [];
         <h2><i class="bi bi-cup-hot-fill" style="color:#FF5E5B;"></i> Complete Payment</h2>
         <div class="pay-block">
             <h3><i class="bi bi-cup-hot-fill" style="color:#FF5E5B;"></i> Pay via Ko-fi</h3>
-            <p>Ko-fi handles your payment securely. No account needed &mdash; just a card and a newfound love of rocks.</p>
-            <a class="btn-kofi"
-               href="https://ko-fi.com/stonedio"
-               target="_blank" rel="noopener noreferrer">
-                <i class="bi bi-cup-hot-fill"></i> Pay <?= $orderTotal ?>&#x20AC; on Ko-fi
-            </a>
+            <p>Ko-fi handles your payment securely. Each package has its own Ko-fi product &mdash; please pay for each one below.</p>
+            <?php foreach ($orderItems as $ci):
+                $tier      = (int)($ci['tier']  ?? 1);
+                $kofiHref  = $kofiLinks[$tier]  ?? 'https://ko-fi.com/stonedio';
+            ?>
+            <div class="kofi-item-row">
+                <span class="kofi-item-label">
+                    <strong><?= htmlspecialchars($ci['label']) ?></strong>
+                    <em>&mdash; <?= $ci['price'] ?>&#x20AC;</em>
+                </span>
+                <a class="btn-kofi" style="width:auto;"
+                   href="<?= htmlspecialchars($kofiHref) ?>"
+                   target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-cup-hot-fill"></i> Pay <?= $ci['price'] ?>&#x20AC;
+                </a>
+            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
