@@ -12,7 +12,7 @@
             <p>A pet rock with a name.</p>
             <div class="tier-footer">
                 <span class="price">1€</span>
-                <form action="src/add-to-cart.php" method="POST">
+                <form action="../src/add-to-cart.php" method="POST">
                     <input type="hidden" name="tier_id" value="1">
                     <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
                 </form>
@@ -26,7 +26,7 @@
             <p>A pet rock with a name and a backstory.</p>
             <div class="tier-footer">
                 <span class="price">10€</span>
-                <form action="src/add-to-cart.php" method="POST">
+                <form action="../src/add-to-cart.php" method="POST">
                     <input type="hidden" name="tier_id" value="2">
                     <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
                 </form>
@@ -41,7 +41,7 @@
             <p>Everything from tier 1 and tier 2 but customisable.</p>
             <div class="tier-footer">
                 <span class="price">20€</span>
-                <form action="src/add-to-cart.php" method="POST">
+                <form action="../src/add-to-cart.php" method="POST">
                     <input type="hidden" name="tier_id" value="3">
                     <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
                 </form>
@@ -55,7 +55,7 @@
             <p>3 high quality rocks with customization options and official adoption certificates.</p>
             <div class="tier-footer">
                 <span class="price">50€</span>
-                <form action="src/add-to-cart.php" method="POST">
+                <form action="../src/add-to-cart.php" method="POST">
                     <input type="hidden" name="tier_id" value="4">
                     <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
                 </form>
