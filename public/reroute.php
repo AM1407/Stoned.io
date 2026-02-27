@@ -24,7 +24,7 @@
     <div class="reroute-container">
         <i class="bi bi-geo-alt-fill reroute-icon"></i>
         <p>Yeah, we weren't going to build socials pages for rocks. That would be absurd. Instead enjoy this image of a cool rock.</p>
-        <img src="coolrocklol.png">
+        <img src="img/coolrocklol.png">
         <a href="index.php" class="reroute-btn"><i class="bi bi-arrow-left"></i> Back to the Rocks</a>
     </div>
 

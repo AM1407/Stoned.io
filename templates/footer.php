@@ -1,7 +1,7 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-brand">
-            <img src="rock-svgrepo-com.svg" alt="Stoned.io logo" width="40px">
+            <img src="img/rock-svgrepo-com.svg" alt="Stoned.io logo" width="40px">
             <span>Stoned.io</span>
             <p>The internet's most premium rock adoption agency. Probably.</p>
         </div>

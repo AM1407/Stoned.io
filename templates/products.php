@@ -12,7 +12,10 @@
             <p>A pet rock with a name.</p>
             <div class="tier-footer">
                 <span class="price">1€</span>
-                <button class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                <form action="src/add-to-cart.php" method="POST">
+                    <input type="hidden" name="tier_id" value="1">
+                    <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                </form>
             </div>
         </div>
         <div class="tier">
@@ -23,7 +26,10 @@
             <p>A pet rock with a name and a backstory.</p>
             <div class="tier-footer">
                 <span class="price">10€</span>
-                <button class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                <form action="src/add-to-cart.php" method="POST">
+                    <input type="hidden" name="tier_id" value="2">
+                    <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                </form>
             </div>
         </div>
         <div class="tier featured">
@@ -35,7 +41,10 @@
             <p>Everything from tier 1 and tier 2 but customisable.</p>
             <div class="tier-footer">
                 <span class="price">20€</span>
-                <button class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                <form action="src/add-to-cart.php" method="POST">
+                    <input type="hidden" name="tier_id" value="3">
+                    <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                </form>
             </div>
         </div>
         <div class="tier">
@@ -43,10 +52,13 @@
                 <span class="tier-badge">Tier 4</span>
                 <h3>Pristine Stone Package</h3>
             </div>
-            <p>5 high quality rocks with customization options and official adoption certificates.</p>
+            <p>3 high quality rocks with customization options and official adoption certificates.</p>
             <div class="tier-footer">
                 <span class="price">50€</span>
-                <button class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                <form action="src/add-to-cart.php" method="POST">
+                    <input type="hidden" name="tier_id" value="4">
+                    <button type="submit" class="add-to-basket"><i class="bi bi-basket2"></i> Add to Basket</button>
+                </form>
             </div>
         </div>
     </div>
