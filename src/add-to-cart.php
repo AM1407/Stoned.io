@@ -24,16 +24,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tier_id'])) {
         ];
 
         // 4. Redirect naar de winkelwagen
-        header('Location: ../public/cart.php');
+        header('Location: cart.php');
         exit();
         
     } else {
         // Iemand probeert Dave op te lichten met een illegale Tier
-        header('Location: ../public/index.php?error=invalid_tier');
+        header('Location: index.php?error=invalid_tier');
         exit();
     }
 } else {
     // Geen directe toegang zonder formulier
-    header('Location: ../public/index.php');
+    header('Location: index.php');
     exit();
 }

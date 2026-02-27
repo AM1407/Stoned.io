@@ -63,15 +63,45 @@
         .customise-panel h3 { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #c9a96e; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
         .customise-panel h3 i { font-size: 1rem; }
 
-        /* ── interact.js drag zone ── */
-        .interact-zone { position: relative; width: 100%; min-height: 320px; background: #0e0c0a; border: 2px dashed #3a3128; border-radius: 12px; margin-bottom: 18px; overflow: hidden; }
-        .interact-zone .drag-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #3a3128; font-size: 0.85rem; pointer-events: none; text-align: center; }
-        .interact-zone .draggable { position: absolute; touch-action: none; user-select: none; cursor: grab; }
-        .interact-zone .draggable img { width: 80px; height: 80px; border-radius: 8px; pointer-events: none; }
-        .interact-zone .draggable.text-sticker { background: rgba(201,169,110,0.15); border: 1px solid #c9a96e; border-radius: 6px; padding: 6px 12px; color: #e8dfc8; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
-        .sticker-tray { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-        .sticker-tray button { background: #1a1612; border: 1px solid #3a3128; border-radius: 8px; padding: 8px 14px; color: #e8dfc8; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: border-color 0.2s ease; }
-        .sticker-tray button:hover { border-color: #c9a96e; }
+        /* ── Customise Canvas ── */
+        .canvas-wrapper { position: relative; background: #0e0c0a; border: 2px dashed #3a3128; border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+        .interact-canvas { position: relative; width: 100%; height: 400px; }
+        .canvas-item { position: absolute; touch-action: none; user-select: none; cursor: grab; box-sizing: border-box; }
+        .canvas-item:active { cursor: grabbing; }
+        .canvas-item img { width: 100%; height: 100%; display: block; pointer-events: none; }
+        .canvas-item.rock-item { z-index: 1; }
+        .canvas-item.accessory-item { z-index: 10; }
+        .canvas-item.selected { outline: 2px solid #c9a96e; outline-offset: 1px; z-index: 999 !important; }
+        .canvas-item.selected .resize-handle { display: block; }
+        .resize-handle { display: none; position: absolute; width: 11px; height: 11px; background: #c9a96e; border: 2px solid #1c1917; border-radius: 2px; z-index: 1000; }
+        .resize-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+        .resize-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+        /* ── Canvas Toolbar ── */
+        .canvas-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; padding: 8px 0; }
+        .canvas-toolbar > label { font-size: 0.78rem; color: #9e9080; white-space: nowrap; }
+        .bg-swatches { display: flex; gap: 6px; }
+        .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; flex-shrink: 0; transition: border-color 0.2s; }
+        .swatch.active, .swatch:hover { border-color: #c9a96e; }
+        .btn-del-selected { display: inline-flex; align-items: center; gap: 5px; background: transparent; border: 1px solid #5a3030; color: #a05050; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600; padding: 5px 10px; border-radius: 6px; cursor: pointer; margin-left: auto; transition: all 0.2s; }
+        .btn-del-selected:not([disabled]):hover { background: rgba(224,80,80,0.12); border-color: #e05050; color: #e05050; }
+        .btn-del-selected[disabled] { opacity: 0.3; cursor: not-allowed; }
+        /* ── Accessory Tray ── */
+        .accessory-panel { background: #0e0c0a; border: 1px solid #2d2520; border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+        .accessory-tabs { display: flex; border-bottom: 1px solid #2d2520; }
+        .acc-tab { flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 10px 6px; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600; color: #5a5046; cursor: pointer; transition: color 0.2s, background 0.2s; }
+        .acc-tab:hover { color: #e8dfc8; background: rgba(255,255,255,0.03); }
+        .acc-tab.active { color: #c9a96e; border-bottom-color: #c9a96e; }
+        .accessory-tray { display: none; padding: 12px 12px 8px; overflow-x: auto; white-space: nowrap; }
+        .accessory-tray.active { display: block; }
+        .accessory-tray::-webkit-scrollbar { height: 4px; }
+        .accessory-tray::-webkit-scrollbar-thumb { background: #3a3128; border-radius: 4px; }
+        .acc-item { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; vertical-align: top; margin-right: 8px; cursor: pointer; }
+        .acc-thumb { width: 56px; height: 56px; background: #1a1612; border: 1px solid #3a3128; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 8px; transition: border-color 0.2s, transform 0.2s; }
+        .acc-thumb img { width: 100%; height: 100%; object-fit: contain; }
+        .acc-item:hover .acc-thumb { border-color: #c9a96e; transform: translateY(-2px); }
+        .acc-item > span { font-size: 0.66rem; color: #7a6f60; text-align: center; white-space: normal; line-height: 1.2; }
 
         /* ── Section Dividers ── */
         .section-divider { border: none; border-top: 1px solid #2d2520; margin: 36px 0; }
@@ -101,6 +131,11 @@
         .option-label span { font-size: 0.9rem; font-weight: 600; color: #e8dfc8; }
         .option-label small { font-size: 0.75rem; color: #7a6f60; }
 
+        /* ── Remove button in banner ── */
+        .pkg-remove-form { margin: 0; }
+        .btn-remove-item { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid #5a3030; color: #a05050; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.5px; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+        .btn-remove-item:hover { background: rgba(224,80,80,0.12); border-color: #e05050; color: #e05050; }
+
         /* ── Price Summary ── */
         .price-summary { background: linear-gradient(160deg, #1e1b17 0%, #2a2420 100%); border: 1px solid #3a3128; border-radius: 12px; padding: 24px 28px; margin-top: 36px; }
         .price-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; color: #9e9080; }
@@ -111,6 +146,13 @@
         .btn-place-order { display: block; width: 100%; margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #c9a96e 0%, #a88a4e 100%); color: #1c1917; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: none; border-radius: 10px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
         .btn-place-order:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201, 169, 110, 0.35); background: linear-gradient(135deg, #d4b87a 0%, #b49558 100%); }
         .btn-place-order:active { transform: translateY(0); }
+        /* ── Ko-fi in checkout ── */
+        .kofi-checkout { background: rgba(255,94,91,0.07); border: 1px solid rgba(255,94,91,0.25); border-radius: 10px; padding: 18px 20px; margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .kofi-note { display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: #9e9080; }
+        .kofi-note i { color: #FF5E5B; font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+        .kofi-note strong { color: #e8dfc8; }
+        .btn-kofi-cart { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #FF5E5B; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: opacity 0.2s; width: 100%; }
+        .btn-kofi-cart:hover { opacity: 0.88; }
 
         /* ── Empty Cart ── */
         .empty-cart { text-align: center; padding: 80px 24px; }
@@ -168,7 +210,15 @@
                         <div class="pkg-name"><?= htmlspecialchars($ci['label']) ?></div>
                         <div class="pkg-includes"><i class="bi bi-box-seam"></i> <?= htmlspecialchars($ci['includes']) ?></div>
                     </div>
-                    <div class="pkg-price"><?= $ci['price'] ?>€</div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
+                        <div class="pkg-price"><?= $ci['price'] ?>€</div>
+                        <form class="pkg-remove-form" action="remove-from-cart.php" method="POST">
+                            <input type="hidden" name="cart_index" value="<?= $ci['index'] ?>">
+                            <button type="submit" class="btn-remove-item">
+                                <i class="bi bi-trash3"></i> Remove
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- ── Rock Cards (tier-adaptive) ── -->
@@ -206,56 +256,68 @@
                 </div>
 
                 <?php if ($ci['tier'] >= 3): ?>
-                    <!-- ── Customisation Panel (T3 & T4) — interact.js zone ── -->
-                    <div class="customise-panel" data-tier="<?= $ci['tier'] ?>">
+                    <!-- ── Customisation Panel (T3+) ── -->
+                    <div class="customise-panel" data-tier="<?= $ci['tier'] ?>" data-cart-index="<?= $ci['index'] ?>">
                         <h3><i class="bi bi-palette"></i> Customise Your Rock</h3>
-                        <p style="color:#9e9080; font-size:0.85rem; margin-bottom:14px;">
-                            Drag stickers and text onto your rock canvas. Go wild — it's your rock.
-                        </p>
+                        <p style="color:#9e9080;font-size:0.82rem;margin-bottom:12px;">Drag &amp; resize rocks and accessories. Click to select, Delete key or button to remove.</p>
 
-                        <div class="sticker-tray">
-                            <button type="button" class="add-sticker" data-type="text" data-value="🤘 Rock On">🤘 Rock On</button>
-                            <button type="button" class="add-sticker" data-type="text" data-value="⭐ VIP">⭐ VIP</button>
-                            <button type="button" class="add-sticker" data-type="text" data-value="🎩 Fancy">🎩 Fancy</button>
-                            <button type="button" class="add-sticker" data-type="text" data-value="💎 Premium">💎 Premium</button>
-                            <button type="button" class="add-sticker" data-type="text" data-value="🔥 Hot Rock">🔥 Hot Rock</button>
-                            <button type="button" class="add-sticker" data-type="text" data-value="👀 Googly">👀 Googly</button>
+                        <!-- Toolbar -->
+                        <div class="canvas-toolbar">
+                            <label>Canvas BG:</label>
+                            <div class="bg-swatches">
+                                <button type="button" class="swatch active" data-bg="#0e0c0a" style="background:#0e0c0a" title="Obsidian"></button>
+                                <button type="button" class="swatch" data-bg="#1a2e1a" style="background:#1a2e1a" title="Forest"></button>
+                                <button type="button" class="swatch" data-bg="#1a1a2e" style="background:#1a1a2e" title="Midnight"></button>
+                                <button type="button" class="swatch" data-bg="#2e1a1a" style="background:#2e1a1a" title="Ember"></button>
+                                <button type="button" class="swatch" data-bg="#2a2410" style="background:#2a2410" title="Sand"></button>
+                                <button type="button" class="swatch" data-bg="#f5f0e8" style="background:#f5f0e8" title="Parchment"></button>
+                            </div>
+                            <button type="button" class="btn-del-selected" disabled><i class="bi bi-trash3"></i> Delete</button>
                         </div>
 
-                        <div class="interact-zone" id="interactZone-<?= $ci['index'] ?>">
-                            <div class="drag-hint">
-                                <i class="bi bi-arrows-move" style="font-size:1.6rem;display:block;margin-bottom:6px;"></i>
-                                Drag items here to customise
+                        <!-- Canvas -->
+                        <div class="canvas-wrapper">
+                            <div class="interact-canvas" id="canvas-<?= $ci['index'] ?>"
+                                 data-rocks='<?= json_encode(array_values($ci['rocks']), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>'
+                                 data-rock-name="<?= htmlspecialchars($ci['rocks'][0]['name'] ?? 'Mystery Rock') ?>"
+                                 data-rock-backstory="<?= htmlspecialchars($ci['rocks'][0]['backstory'] ?? '') ?>">
                             </div>
-                            <?php foreach ($ci['rocks'] as $ri => $rock): ?>
-                                <div class="draggable"
-                                     data-x="<?= 30 + ($ri * 110) ?>" data-y="100"
-                                     style="transform: translate(<?= 30 + ($ri * 110) ?>px, 100px);">
-                                    <img src="img/<?= htmlspecialchars($rock['image']) ?>"
-                                         alt="<?= htmlspecialchars($rock['name'] ?? 'Rock') ?>"
-                                         onerror="this.src='img/placeholder.png'">
+                        </div>
+
+                        <!-- Accessory Tray -->
+                        <div class="accessory-panel">
+                            <div class="accessory-tabs">
+                                <?php $first = true; foreach ($customOptions as $catKey => $catItems): ?>
+                                    <button type="button" class="acc-tab<?= $first ? ' active' : '' ?>"
+                                            data-cat="acc-<?= $ci['index'] ?>-<?= htmlspecialchars($catKey) ?>">
+                                        <?= htmlspecialchars(ucfirst($catKey)) ?>
+                                    </button>
+                                <?php $first = false; endforeach; ?>
+                            </div>
+                            <?php $first = true; foreach ($customOptions as $catKey => $catItems): ?>
+                                <div class="accessory-tray<?= $first ? ' active' : '' ?>"
+                                     id="acc-<?= $ci['index'] ?>-<?= htmlspecialchars($catKey) ?>">
+                                    <?php foreach ($catItems as $acc): ?>
+                                        <div class="acc-item"
+                                             data-svg="img/<?= htmlspecialchars($acc['image']) ?>"
+                                             data-acc-name="<?= htmlspecialchars($acc['name']) ?>">
+                                            <div class="acc-thumb">
+                                                <img src="img/<?= htmlspecialchars($acc['image']) ?>"
+                                                     alt="<?= htmlspecialchars($acc['name']) ?>"
+                                                     onerror="this.style.display='none';this.parentElement.innerHTML+='<i class=\'bi bi-question-circle\' style=\'color:#5a5046;font-size:1.4rem\'></i>'">
+                                            </div>
+                                            <span><?= htmlspecialchars($acc['name']) ?></span>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
-                            <?php endforeach; ?>
+                            <?php $first = false; endforeach; ?>
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="customName-<?= $ci['index'] ?>">Custom Display Name</label>
-                                <input type="text" id="customName-<?= $ci['index'] ?>"
-                                       name="custom_name[<?= $ci['index'] ?>]"
-                                       placeholder="Give your rock a new identity"
-                                       maxlength="40">
-                            </div>
-                            <div class="form-group">
-                                <label for="customColour-<?= $ci['index'] ?>">Background Colour</label>
-                                <select id="customColour-<?= $ci['index'] ?>" name="custom_colour[<?= $ci['index'] ?>]">
-                                    <option value="dark">Obsidian Black</option>
-                                    <option value="sand">Sandy Beige</option>
-                                    <option value="ocean">Ocean Blue</option>
-                                    <option value="forest">Forest Green</option>
-                                    <option value="lava">Lava Red</option>
-                                </select>
-                            </div>
+                        <div class="form-group" style="margin-top:4px;">
+                            <label for="customName-<?= $ci['index'] ?>">Custom Display Name (shown on PDF)</label>
+                            <input type="text" id="customName-<?= $ci['index'] ?>"
+                                   name="custom_name[<?= $ci['index'] ?>]"
+                                   placeholder="Give your rock a new identity" maxlength="40">
                         </div>
                     </div>
                 <?php endif; ?>
@@ -320,8 +382,30 @@
                     </div>
                 </div>
 
+                <!-- ── Ko-fi Payment ── -->
+                <div class="kofi-checkout">
+                    <div class="kofi-note">
+                        <i class="bi bi-cup-hot-fill"></i>
+                        <span>We use <strong>Ko-fi</strong> for payment. Clicking <em>Place Order</em> will open Ko-fi in a new tab so you can pay while your order is saved.</span>
+                    </div>
+                    <a class="btn-kofi-cart"
+                       href="https://ko-fi.com/stonedio"
+                       target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-cup-hot-fill"></i> Pay <?= $cartTotal ?>&#x20AC; on Ko-fi
+                    </a>
+                </div>
+
+                <!-- Hidden canvas captures filled by JS on submit (T3 items) -->
+                <?php foreach ($cartDisplay as $ci): ?>
+                    <?php if ($ci['tier'] >= 3): ?>
+                        <input type="hidden"
+                               name="canvas_capture[<?= $ci['index'] ?>]"
+                               id="captureInput-<?= $ci['index'] ?>">
+                    <?php endif; ?>
+                <?php endforeach; ?>
+
                 <button type="submit" name="place_order" value="1" class="btn-place-order">
-                    <i class="bi bi-lock-fill"></i> Place Order
+                    <i class="bi bi-lock-fill"></i> Place Order &amp; Continue to Ko-fi
                 </button>
             </form>
 
@@ -337,79 +421,201 @@
     ?>
     <?php if ($needsInteract): ?>
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        /* ── Make existing .draggable items draggable ── */
-        interact('.draggable').draggable({
-            inertia: true,
-            modifiers: [
-                interact.modifiers.restrictRect({ restriction: 'parent', endOnly: true })
-            ],
+        let zTop = 20;
+
+        // ── Create a canvas item (rock or accessory) ─────────────────
+        function makeItem(canvas, { x = 20, y = 20, w = 120, h = 120, src, isRock = false, name = '' }) {
+            const wrap = document.createElement('div');
+            wrap.classList.add('canvas-item', isRock ? 'rock-item' : 'accessory-item');
+            wrap.style.cssText = `transform:translate(${x}px,${y}px);width:${w}px;height:${h}px;z-index:${isRock ? 1 : ++zTop};`;
+            wrap.dataset.x = x;
+            wrap.dataset.y = y;
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = name;
+            wrap.appendChild(img);
+
+            ['nw','ne','sw','se'].forEach(pos => {
+                const h = document.createElement('div');
+                h.className = 'resize-handle ' + pos;
+                wrap.appendChild(h);
+            });
+
+            wrap.addEventListener('pointerdown', (e) => {
+                if (!e.target.classList.contains('resize-handle')) select(wrap);
+            });
+
+            canvas.appendChild(wrap);
+            return wrap;
+        }
+
+        function select(el) {
+            document.querySelectorAll('.canvas-item.selected').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            el.style.zIndex = ++zTop;
+            const panel = el.closest('.customise-panel');
+            if (panel) panel.querySelector('.btn-del-selected').removeAttribute('disabled');
+        }
+
+        function deselectAll() {
+            document.querySelectorAll('.canvas-item.selected').forEach(i => i.classList.remove('selected'));
+            document.querySelectorAll('.btn-del-selected').forEach(b => b.setAttribute('disabled', ''));
+        }
+
+        // ── Initialise each canvas with its rocks ────────────────────
+        document.querySelectorAll('.interact-canvas').forEach(canvas => {
+            const rocks = JSON.parse(canvas.dataset.rocks || '[]');
+            const cw    = canvas.offsetWidth  || 600;
+            const ch    = canvas.offsetHeight || 400;
+            const step  = Math.floor(cw / (rocks.length + 1));
+            rocks.forEach((rock, i) => {
+                makeItem(canvas, {
+                    x: step * (i + 1) - 75,
+                    y: Math.floor((ch - 150) / 2),
+                    w: 150, h: 150,
+                    src: 'img/' + rock.image,
+                    isRock: true,
+                    name: rock.name ?? 'Rock'
+                });
+            });
+        });
+
+        // ── interact.js: drag ────────────────────────────────────────
+        interact('.canvas-item').draggable({
+            inertia: false,
+            modifiers: [ interact.modifiers.restrictRect({ restriction: 'parent', endOnly: false }) ],
             listeners: {
-                move(event) {
-                    const target = event.target;
-                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-                    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-                    target.style.transform = `translate(${x}px, ${y}px)`;
-                    target.setAttribute('data-x', x);
-                    target.setAttribute('data-y', y);
+                start: e => select(e.target),
+                move(e) {
+                    const t = e.target;
+                    const x = (parseFloat(t.dataset.x) || 0) + e.dx;
+                    const y = (parseFloat(t.dataset.y) || 0) + e.dy;
+                    t.style.transform = `translate(${x}px,${y}px)`;
+                    t.dataset.x = x; t.dataset.y = y;
                 }
             }
         });
 
-        /* ── Sticker tray — add draggable text elements ── */
-        document.querySelectorAll('.add-sticker').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const panel = btn.closest('.customise-panel');
-                const zone  = panel.querySelector('.interact-zone');
-                const hint  = zone.querySelector('.drag-hint');
-                if (hint) hint.style.display = 'none';
-
-                const el = document.createElement('div');
-                el.classList.add('draggable', 'text-sticker');
-                el.textContent = btn.getAttribute('data-value');
-                el.setAttribute('data-x', 20);
-                el.setAttribute('data-y', 20);
-                el.style.transform = 'translate(20px, 20px)';
-                zone.appendChild(el);
-            });
-        });
-
-        /* ── Toggle option cards ── */
-        document.querySelectorAll('.option-card').forEach(card => {
-            const input = card.querySelector('input');
-            if (!input) return;
-            card.addEventListener('click', () => {
-                if (input.type === 'radio') {
-                    card.closest('.option-grid').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                } else {
-                    card.classList.toggle('selected', input.checked);
+        // ── interact.js: resize ──────────────────────────────────────
+        interact('.canvas-item').resizable({
+            edges: { top: '.nw,.ne', left: '.nw,.sw', bottom: '.sw,.se', right: '.ne,.se' },
+            modifiers: [ interact.modifiers.restrictSize({ min: { width: 30, height: 30 } }) ],
+            listeners: {
+                start: e => select(e.target),
+                move(e) {
+                    const t = e.target;
+                    const x = (parseFloat(t.dataset.x) || 0) + e.deltaRect.left;
+                    const y = (parseFloat(t.dataset.y) || 0) + e.deltaRect.top;
+                    t.style.transform = `translate(${x}px,${y}px)`;
+                    t.style.width  = e.rect.width  + 'px';
+                    t.style.height = e.rect.height + 'px';
+                    t.dataset.x = x; t.dataset.y = y;
                 }
-            });
-            if (input.checked) card.classList.add('selected');
+            }
         });
+
+        // ── Click canvas background → deselect ───────────────────────
+        document.querySelectorAll('.interact-canvas').forEach(c => {
+            c.addEventListener('pointerdown', e => { if (e.target === c) deselectAll(); });
+        });
+
+        // ── Delete button ────────────────────────────────────────────
+        document.querySelectorAll('.btn-del-selected').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sel = btn.closest('.customise-panel').querySelector('.canvas-item.selected');
+                if (sel) { sel.remove(); btn.setAttribute('disabled', ''); }
+            });
+        });
+        document.addEventListener('keydown', e => {
+            if ((e.key === 'Delete' || e.key === 'Backspace') &&
+                 e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                document.querySelectorAll('.canvas-item.selected').forEach(el => {
+                    el.closest('.customise-panel')?.querySelector('.btn-del-selected')?.setAttribute('disabled', '');
+                    el.remove();
+                });
+            }
+        });
+
+        // ── Accessory tray tabs ───────────────────────────────────────
+        document.querySelectorAll('.acc-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const ap = tab.closest('.accessory-panel');
+                ap.querySelectorAll('.acc-tab').forEach(t => t.classList.remove('active'));
+                ap.querySelectorAll('.accessory-tray').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.cat)?.classList.add('active');
+            });
+        });
+
+        // ── Add accessory from tray ───────────────────────────────────
+        document.querySelectorAll('.acc-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const canvas = item.closest('.customise-panel').querySelector('.interact-canvas');
+                const el = makeItem(canvas, {
+                    x: 30 + Math.random() * 100,
+                    y: 30 + Math.random() * 100,
+                    w: 80, h: 80,
+                    src: item.dataset.svg,
+                    isRock: false,
+                    name: item.dataset.accName
+                });
+                select(el);
+            });
+        });
+
+        // ── Background colour swatches ────────────────────────────────
+        document.querySelectorAll('.swatch').forEach(sw => {
+            sw.addEventListener('click', () => {
+                const panel = sw.closest('.customise-panel');
+                panel.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+                sw.classList.add('active');
+                panel.querySelector('.canvas-wrapper').style.background = sw.dataset.bg;
+            });
+        });
+
+        // ── Form submit: capture T3 canvases before posting ────────────────
+        const orderForm = document.getElementById('orderForm');
+        if (orderForm) {
+            orderForm.addEventListener('submit', async (e) => {
+                const inputs = orderForm.querySelectorAll('input[name^="canvas_capture"]');
+                if (!inputs.length) return; // no captures needed
+
+                e.preventDefault();
+
+                const kofiLink = orderForm.querySelector('.btn-kofi-cart');
+                if (kofiLink) window.open(kofiLink.href, '_blank');
+
+                try {
+                    for (const input of inputs) {
+                        const canvasId  = input.id.replace('captureInput-', 'canvas-');
+                        const canvasEl  = document.getElementById(canvasId);
+                        const wrapEl    = canvasEl?.closest('.canvas-wrapper');
+                        if (!wrapEl) continue;
+
+                        deselectAll();
+                        const snap = await html2canvas(wrapEl, {
+                            backgroundColor: null, scale: 2,
+                            useCORS: true, allowTaint: true, logging: false
+                        });
+                        input.value = snap.toDataURL('image/png');
+                    }
+                } catch (err) {
+                    console.warn('Canvas capture failed, continuing anyway:', err);
+                }
+
+                orderForm.submit();
+            });
+        }
+
     });
     </script>
     <?php else: ?>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.option-card').forEach(card => {
-            const input = card.querySelector('input');
-            if (!input) return;
-            card.addEventListener('click', () => {
-                if (input.type === 'radio') {
-                    card.closest('.option-grid').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                } else {
-                    card.classList.toggle('selected', input.checked);
-                }
-            });
-            if (input.checked) card.classList.add('selected');
-        });
-    });
-    </script>
+    <script>document.addEventListener('DOMContentLoaded', () => {});</script>
     <?php endif; ?>
 </body>
 </html>

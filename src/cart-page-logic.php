@@ -46,6 +46,7 @@ $inventoryPath = __DIR__ . '/inventory.json';
 $inventoryRaw  = file_get_contents($inventoryPath);
 $inventoryData = json_decode($inventoryRaw, true);
 $allRocks      = $inventoryData['products'] ?? $inventoryData;
+$customOptions = $inventoryData['customization_options'] ?? [];
 
 // Group rocks by tier key
 $rocksByTier = [];
@@ -55,12 +56,29 @@ foreach ($allRocks as $rock) {
 }
 
 // ─── Helper: pick random rocks for a tier ────────────────────────
+// Once a tier is assigned, the same rocks are returned forever —
+// even if the item is removed and re-added — so users can't cycle
+// through random assignments to cherry-pick a favourite.
 function pickRocksForTier(int $tier, array $rocksByTier): array {
-    $pool = $rocksByTier[$tier] ?? [];
+    // Check the persistent locked pool first
+    if (!empty($_SESSION['tier_assignments'][$tier])) {
+        $lockedIds = $_SESSION['tier_assignments'][$tier];
+        $result    = [];
+        foreach ($rocksByTier[$tier] ?? [] as $rock) {
+            if (in_array($rock['id'], $lockedIds, true)) {
+                $result[] = $rock;
+            }
+        }
+        if (!empty($result)) {
+            return $result;
+        }
+    }
+
+    // First time for this tier — pick randomly
+    $pool  = $rocksByTier[$tier] ?? [];
     if (empty($pool)) {
         return [];
     }
-    // T4 gets 3 rocks, everything else gets 1
     $count = ($tier === 4) ? min(3, count($pool)) : 1;
     $keys  = array_rand($pool, $count);
     if (!is_array($keys)) {
@@ -70,6 +88,10 @@ function pickRocksForTier(int $tier, array $rocksByTier): array {
     foreach ($keys as $k) {
         $picked[] = $pool[$k];
     }
+
+    // Lock the assignment into the session
+    $_SESSION['tier_assignments'][$tier] = array_column($picked, 'id');
+
     return $picked;
 }
 
@@ -128,12 +150,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
             $formErrors[] = 'Please enter a valid email address.';
         }
 
-        // 3. If all good, "process" the order (placeholder)
+        // 3. Process the order — store to session and redirect to confirmation
         if (empty($formErrors)) {
-            $formSuccess = true;
-            // In a real app you'd store the order, send confirmation, etc.
-            // For now we just clear the cart
-            // $_SESSION['cart'] = [];
+            $orderRef = 'ORD-' . strtoupper(substr(md5(uniqid('', true)), 0, 8));
+            $_SESSION['last_order'] = [
+                'ref'             => $orderRef,
+                'email'           => $sanitisedEmail,
+                'recipient_name'  => htmlspecialchars(trim($_POST['recipient_name']  ?? '')),
+                'recipient_email' => filter_var(trim($_POST['recipient_email'] ?? ''), FILTER_SANITIZE_EMAIL),
+                'gift_message'    => htmlspecialchars(trim($_POST['gift_message']    ?? '')),
+                'items'           => $cartDisplay,
+                'total'           => $cartTotal,
+                'custom_names'    => $_POST['custom_name'] ?? [],
+                'canvas_captures' => $_POST['canvas_capture'] ?? [],
+                'placed_at'       => date('Y-m-d H:i:s'),
+            ];
+            $_SESSION['cart'] = [];
+            header('Location: order-confirmation.php');
+            exit;
         }
     }
 }

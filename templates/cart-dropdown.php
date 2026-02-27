@@ -21,7 +21,7 @@
         </ul>
         <hr>
         <div class="cart-footer">
-            <p>Totaal: €<?php echo $total; ?></p>
+            <p>Total: €<?php echo $total; ?></p>
             <a href="cart.php" class="btn-go-to-cart">Go to cart</a>
         </div>
     <?php endif; ?>
