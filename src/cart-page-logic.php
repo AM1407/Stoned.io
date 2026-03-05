@@ -161,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
                 'gift_message'    => htmlspecialchars(trim($_POST['gift_message']    ?? '')),
                 'items'           => $cartDisplay,
                 'total'           => $cartTotal,
-                'custom_names'    => $_POST['custom_name'] ?? [],
                 'canvas_captures' => $_POST['canvas_capture'] ?? [],
                 'placed_at'       => date('Y-m-d H:i:s'),
             ];

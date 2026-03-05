@@ -206,6 +206,8 @@
 
         <?php else: ?>
 
+            <form action="cart.php" method="POST" id="orderForm" autocomplete="off">
+
             <?php foreach ($cartDisplay as $ci): ?>
                 <!-- ── Package Banner ── -->
                 <div class="package-banner">
@@ -216,12 +218,9 @@
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
                         <div class="pkg-price"><?= $ci['price'] ?>€</div>
-                        <form class="pkg-remove-form" action="remove-from-cart.php" method="POST">
-                            <input type="hidden" name="cart_index" value="<?= $ci['index'] ?>">
-                            <button type="submit" class="btn-remove-item">
-                                <i class="bi bi-trash3"></i> Remove
-                            </button>
-                        </form>
+                        <a href="remove-from-cart.php?cart_index=<?= $ci['index'] ?>" class="btn-remove-item">
+                            <i class="bi bi-trash3"></i> Remove
+                        </a>
                     </div>
                 </div>
 
@@ -317,20 +316,11 @@
                             <?php $first = false; endforeach; ?>
                         </div>
 
-                        <div class="form-group" style="margin-top:4px;">
-                            <label for="customName-<?= $ci['index'] ?>">Custom Display Name (shown on PDF)</label>
-                            <input type="text" id="customName-<?= $ci['index'] ?>"
-                                   name="custom_name[<?= $ci['index'] ?>]"
-                                   placeholder="Give your rock a new identity" maxlength="40">
-                        </div>
                     </div>
                 <?php endif; ?>
 
                 <hr class="section-divider">
             <?php endforeach; ?>
-
-            <!-- ── Order Form ── -->
-            <form action="cart.php" method="POST" id="orderForm" autocomplete="off">
 
                 <!-- Email Section -->
                 <div class="form-section">
@@ -404,7 +394,7 @@
                 <button type="submit" name="place_order" value="1" class="btn-place-order">
                     <i class="bi bi-lock-fill"></i> Place Order &amp; Pay
                 </button>
-            </form>
+            </form><!-- /orderForm -->
 
         <?php endif; ?>
     </div>
