@@ -146,16 +146,10 @@
         .btn-place-order { display: block; width: 100%; margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #c9a96e 0%, #a88a4e 100%); color: #1c1917; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: none; border-radius: 10px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
         .btn-place-order:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201, 169, 110, 0.35); background: linear-gradient(135deg, #d4b87a 0%, #b49558 100%); }
         .btn-place-order:active { transform: translateY(0); }
-        /* ── Ko-fi in checkout ── */
-        .kofi-checkout { background: rgba(255,94,91,0.07); border: 1px solid rgba(255,94,91,0.25); border-radius: 10px; padding: 18px 20px; margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .kofi-note { display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: #9e9080; }
-        .kofi-note i { color: #FF5E5B; font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
-        .kofi-note strong { color: #e8dfc8; }
-        .kofi-item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 8px 0; border-top: 1px solid rgba(255,94,91,0.12); }
-        .kofi-item-label { font-size: 0.85rem; color: #e8dfc8; }
-        .kofi-item-label em { color: #c9a96e; font-style: normal; }
-        .btn-kofi-cart { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #FF5E5B; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: opacity 0.2s; white-space: nowrap; }
-        .btn-kofi-cart:hover { opacity: 0.88; }
+        /* ── Stripe note ── */
+        .stripe-note { display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: #9e9080; margin-top: 16px; padding: 14px 18px; background: rgba(99,91,255,0.06); border: 1px solid rgba(99,91,255,0.2); border-radius: 10px; }
+        .stripe-note i { color: #635bff; font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+        .stripe-note strong { color: #e8dfc8; }
 
         /* ── Empty Cart ── */
         .empty-cart { text-align: center; padding: 80px 24px; }
@@ -187,6 +181,13 @@
                     <p><?= htmlspecialchars($err) ?></p>
                 <?php endforeach; ?>
             </div>
+        <?php endif; ?>
+
+        <?php if (!empty($_SESSION['checkout_error'])): ?>
+            <div class="alert alert-error">
+                <p><i class="bi bi-exclamation-triangle"></i> <?= htmlspecialchars($_SESSION['checkout_error']) ?></p>
+            </div>
+            <?php unset($_SESSION['checkout_error']); ?>
         <?php endif; ?>
 
         <?php if ($formSuccess): ?>
@@ -385,25 +386,10 @@
                     </div>
                 </div>
 
-                <!-- ── Ko-fi Payment — one row per item ── -->
-                <div class="kofi-checkout">
-                    <div class="kofi-note">
-                        <i class="bi bi-cup-hot-fill"></i>
-                        <span>We use <strong>Ko-fi</strong> for payment. Each package has its own product page — clicking <em>Place Order</em> opens them for you.</span>
-                    </div>
-                    <?php foreach ($cartDisplay as $ci): ?>
-                        <div class="kofi-item-row">
-                            <span class="kofi-item-label">
-                                <strong><?= htmlspecialchars($ci['label']) ?></strong>
-                                <em>&mdash; <?= $ci['price'] ?>&#x20AC;</em>
-                            </span>
-                            <a class="btn-kofi-cart kofi-item-link"
-                               href="<?= htmlspecialchars($kofiLinks[$ci['tier']]) ?>"
-                               target="_blank" rel="noopener noreferrer">
-                                <i class="bi bi-cup-hot-fill"></i> Pay <?= $ci['price'] ?>&#x20AC;
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
+                <!-- ── Stripe payment note ── -->
+                <div class="stripe-note">
+                    <i class="bi bi-credit-card-2-front"></i>
+                    <span>Payments are handled securely by <strong>Stripe</strong>. You&rsquo;ll be redirected to complete payment after placing your order.</span>
                 </div>
 
                 <!-- Hidden canvas captures filled by JS on submit (T3 items) -->
@@ -416,7 +402,7 @@
                 <?php endforeach; ?>
 
                 <button type="submit" name="place_order" value="1" class="btn-place-order">
-                    <i class="bi bi-lock-fill"></i> Place Order &amp; Continue to Ko-fi
+                    <i class="bi bi-lock-fill"></i> Place Order &amp; Pay
                 </button>
             </form>
 
@@ -589,38 +575,32 @@
             });
         });
 
-        // ── Form submit: open Ko-fi tabs + capture T3 canvases before posting ────────────────
+        // ── Form submit: capture T3 canvases before posting ────────────────
         const orderForm = document.getElementById('orderForm');
         if (orderForm) {
             orderForm.addEventListener('submit', async (e) => {
-                const kofiLinks = orderForm.querySelectorAll('.kofi-item-link');
-                const captures  = orderForm.querySelectorAll('input[name^="canvas_capture"]');
+                const captures = orderForm.querySelectorAll('input[name^="canvas_capture"]');
 
-                if (!kofiLinks.length && !captures.length) return; // nothing to do
+                if (!captures.length) return; // nothing to do
 
                 e.preventDefault();
 
-                // Open one Ko-fi tab per item
-                kofiLinks.forEach(link => window.open(link.href, '_blank'));
-
                 // Capture T3 canvases if any
-                if (captures.length) {
-                    try {
-                        for (const input of captures) {
-                            const canvasId = input.id.replace('captureInput-', 'canvas-');
-                            const canvasEl = document.getElementById(canvasId);
-                            const wrapEl   = canvasEl?.closest('.canvas-wrapper');
-                            if (!wrapEl) continue;
-                            deselectAll();
-                            const snap = await html2canvas(wrapEl, {
-                                backgroundColor: null, scale: 2,
-                                useCORS: true, allowTaint: true, logging: false
-                            });
-                            input.value = snap.toDataURL('image/png');
-                        }
-                    } catch (err) {
-                        console.warn('Canvas capture failed, continuing anyway:', err);
+                try {
+                    for (const input of captures) {
+                        const canvasId = input.id.replace('captureInput-', 'canvas-');
+                        const canvasEl = document.getElementById(canvasId);
+                        const wrapEl   = canvasEl?.closest('.canvas-wrapper');
+                        if (!wrapEl) continue;
+                        deselectAll();
+                        const snap = await html2canvas(wrapEl, {
+                            backgroundColor: null, scale: 2,
+                            useCORS: true, allowTaint: true, logging: false
+                        });
+                        input.value = snap.toDataURL('image/png');
                     }
+                } catch (err) {
+                    console.warn('Canvas capture failed, continuing anyway:', err);
                 }
 
                 orderForm.submit();

@@ -45,11 +45,11 @@
         </p>
         <h4>3. Payment Processing (The real Pros)</h4>
         <p>
-            We are in the business of digital rocks, not financial security. That is why we use Stripe and Ko-fi to handle your money.<br><br>
+            We are in the business of digital rocks, not financial security. That is why we use Stripe to handle your money.<br><br>
 
             - Zero Visibility: We never see, touch, or store your credit card number or bank details.<br><br>
 
-            - External Trust: When you pay, you are subject to the privacy policies of Stripe or Ko-fi. They tell us "Payment Successful," and we give you the pixels. Everyone wins.<br><br>
+            - External Trust: When you pay, you are subject to the privacy policy of Stripe. They tell us "Payment Successful," and we give you the pixels. Everyone wins.<br><br>
         </p>
         <h4>4. Third-Party Sharing</h4>
         <p>
