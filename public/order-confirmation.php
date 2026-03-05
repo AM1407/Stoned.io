@@ -20,7 +20,6 @@ $orderRef     = $order['ref']            ?? 'ORD-UNKNOWN';
 $orderEmail   = $order['email']          ?? '';
 $orderTotal   = $order['total']          ?? 0;
 $orderItems   = $order['items']          ?? [];
-$customNames  = $order['custom_names']   ?? [];
 $placedAt     = $order['placed_at']      ?? date('Y-m-d H:i:s');
 $recipName    = $order['recipient_name'] ?? '';
 $giftMsg      = $order['gift_message']   ?? '';
@@ -177,9 +176,6 @@ if ($sessionId) {
                     <?php if ($rock): ?>
                         <div class="rock-tier">
                             Your rock: <strong style="color:#c9a96e"><?= htmlspecialchars($rock['name']) ?></strong>
-                            <?php if (!empty($customNames[$ci['index']])): ?>
-                                — displayed as "<em><?= htmlspecialchars($customNames[$ci['index']]) ?></em>"
-                            <?php endif; ?>
                         </div>
                     <?php endif; ?>
                     <?php if (count($ci['rocks']) > 1): ?>
@@ -244,7 +240,6 @@ if ($sessionId) {
 
         <?php foreach ($orderItems as $ci):
             $tier        = (int)($ci['tier'] ?? 1);
-            $customName  = $customNames[$ci['index']] ?? '';
             $capture     = $canvasCaptures[$ci['index']] ?? '';
             $rocksForDoc = ($tier === 4) ? $ci['rocks'] : [$ci['rocks'][0] ?? null];
             $tierLabels  = [1=>'Pebble Package',2=>'Boulder Package',3=>'ROCKstar Package',4=>'Pristine Stone Package'];
@@ -254,7 +249,7 @@ if ($sessionId) {
                 $rockName    = $rock['name']      ?? 'Mystery Rock';
                 $backstory   = $rock['backstory'] ?? '';
                 $rockImg     = $rock['image']     ?? 'rock-svgrepo-com.svg';
-                $displayName = ($customName && $tier !== 4) ? $customName : $rockName;
+                $displayName = $rockName;
                 $dlLabel     = ($tier === 4) ? 'Download Certificate' : 'Download PDF';
             ?>
                 <div class="cert-item">
