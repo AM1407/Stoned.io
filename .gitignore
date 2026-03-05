@@ -1,0 +1,15 @@
+# Environment secrets
+.env
+
+# Composer dependencies
+/vendor/
+
+# Runtime data
+src/paid_orders.json
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

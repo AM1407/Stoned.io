@@ -20,6 +20,13 @@ $giftMsg      = $order['gift_message']   ?? '';
 $hasCertItems   = !empty($orderItems);
 $canvasCaptures = $order['canvas_captures'] ?? [];
 $kofiLinks      = $order['kofi_links']      ?? [];
+
+// ── Payment verification via Ko-fi webhook ────────────────────────
+define('PAID_ORDERS_FILE', __DIR__ . '/../src/paid_orders.json');
+$_paids = file_exists(PAID_ORDERS_FILE)
+    ? (json_decode(file_get_contents(PAID_ORDERS_FILE), true) ?: [])
+    : [];
+$isPaid = isset($_paids[strtolower(trim($orderEmail))]) && count($_paids[strtolower(trim($orderEmail))]) > 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,6 +94,21 @@ $kofiLinks      = $order['kofi_links']      ?? [];
                     padding: 13px 18px; border-radius: 8px; border: none; cursor: pointer;
                     text-decoration: none; transition: opacity 0.2s, box-shadow 0.2s; }
         .btn-kofi:hover { opacity: 0.88; box-shadow: 0 4px 18px rgba(255,94,91,0.35); }
+
+        /* ── Payment pending state ── */
+        .pending-block { text-align: center; padding: 32px 20px; }
+        .pending-spinner { display: inline-block; width: 38px; height: 38px; border: 3px solid #2d2520;
+                           border-top-color: #c9a96e; border-radius: 50%;
+                           animation: spin 0.9s linear infinite; margin-bottom: 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .pending-block h3 { font-size: 1rem; font-weight: 700; color: #e8dfc8; margin-bottom: 8px; }
+        .pending-block p  { font-size: 0.82rem; color: #7a6f60; line-height: 1.5; }
+        .btn-refresh { display: inline-flex; align-items: center; gap: 7px; margin-top: 18px;
+                       background: transparent; border: 1px solid #c9a96e; color: #c9a96e;
+                       font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+                       padding: 8px 16px; border-radius: 7px; cursor: pointer; transition: background 0.2s; }
+        .btn-refresh:hover { background: rgba(201,169,110,0.1); }
+
         .kofi-item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px;
                          flex-wrap: wrap; padding: 10px 0; border-top: 1px solid rgba(255,94,91,0.12); }
         .kofi-item-row:first-of-type { border-top: none; }
@@ -220,8 +242,20 @@ $kofiLinks      = $order['kofi_links']      ?? [];
 
     <!-- ── Your Rock Documents (all tiers) ── -->
     <?php if ($hasCertItems): ?>
-    <div class="section-card">
+    <div class="section-card" id="docs-section">
         <h2><i class="bi bi-file-earmark-pdf-fill"></i> Your Rock Documents</h2>
+
+        <?php if (!$isPaid): ?>
+        <!-- Pending payment state — JS will replace this once the webhook fires -->
+        <div class="pending-block" id="payment-pending">
+            <div class="pending-spinner"></div>
+            <h3>Waiting for payment confirmation&hellip;</h3>
+            <p>Complete your Ko-fi payment above. This page will unlock your downloads automatically once Ko-fi confirms the transaction. It usually takes a few seconds.</p>
+            <button class="btn-refresh" onclick="location.reload()">
+                <i class="bi bi-arrow-clockwise"></i> Check Now
+            </button>
+        </div>
+        <?php else: ?>
         <p style="font-size:0.82rem; color:#7a6f60; margin-bottom:18px;">
             Download your personalised rock document. T4 owners get one certificate per rock.
         </p>
@@ -271,8 +305,9 @@ $kofiLinks      = $order['kofi_links']      ?? [];
         <p style="font-size:0.68rem; color:#5a5046; margin-top:14px;">
             * T4 certificates are legally non-binding in most jurisdictions. Spiritual binding may vary.
         </p>
+        <?php endif; /* $isPaid */ ?>
     </div>
-    <?php endif; ?>
+    <?php endif; /* $hasCertItems */ ?>
 
     <!-- ── Actions ── -->
     <div class="confirm-actions">
@@ -283,6 +318,26 @@ $kofiLinks      = $order['kofi_links']      ?? [];
 </div>
 
 <?php include '../templates/footer.php'; ?>
+
+<?php if ($hasCertItems && !$isPaid): ?>
+<!-- ── Poll for payment confirmation ── -->
+<script>
+(function () {
+    const INTERVAL = 4000; // ms between checks
+    let timer = setInterval(async () => {
+        try {
+            const res  = await fetch('kofi-status.php', { cache: 'no-store' });
+            const data = await res.json();
+            if (data.paid) {
+                clearInterval(timer);
+                // Reload so PHP renders the download section
+                location.reload();
+            }
+        } catch (e) { /* network blip — keep polling */ }
+    }, INTERVAL);
+})();
+</script>
+<?php endif; ?>
 
 <?php if ($hasCertItems): ?>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
