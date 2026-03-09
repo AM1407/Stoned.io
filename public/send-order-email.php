@@ -12,6 +12,16 @@
 
 ob_start(); // buffer any stray output so JSON response stays clean
 
+// Catch fatal errors (e.g. missing vendor class) and return JSON instead of blank 500
+register_shutdown_function(function () {
+    $err = error_get_last();
+    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        ob_clean();
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'message' => 'Server error: ' . $err['message']]);
+    }
+});
+
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
 

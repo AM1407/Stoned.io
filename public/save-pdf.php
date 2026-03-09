@@ -61,12 +61,15 @@ if (!$safeRef || !$safeFilename || !str_ends_with(strtolower($safeFilename), '.p
 }
 
 // ── Decode PDF ────────────────────────────────────────────────────
-$prefix = 'data:application/pdf;base64,';
-if (strncmp($dataUrl, $prefix, strlen($prefix)) !== 0) {
+// jsPDF datauristring format: data:application/pdf;filename=generated.pdf;base64,<data>
+// Validate it's a PDF data URI and find the base64 payload after the last ';base64,'
+$base64Marker = ';base64,';
+$base64Pos    = strrpos($dataUrl, $base64Marker);
+if (strncmp($dataUrl, 'data:application/pdf', 20) !== 0 || $base64Pos === false) {
     jsonOut(false, 'Invalid data URI — must be a PDF data URL');
 }
 
-$binary = base64_decode(substr($dataUrl, strlen($prefix)), true);
+$binary = base64_decode(substr($dataUrl, $base64Pos + strlen($base64Marker)), true);
 if ($binary === false || strlen($binary) < 5) {
     jsonOut(false, 'Base64 decode failed');
 }
