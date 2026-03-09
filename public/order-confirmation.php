@@ -240,11 +240,10 @@ if ($sessionId) {
 
         <?php foreach ($orderItems as $ci):
             $tier        = (int)($ci['tier'] ?? 1);
-            $capture     = $canvasCaptures[$ci['index']] ?? '';
             $rocksForDoc = ($tier === 4) ? $ci['rocks'] : [$ci['rocks'][0] ?? null];
             $tierLabels  = [1=>'Pebble Package',2=>'Boulder Package',3=>'ROCKstar Package',4=>'Pristine Stone Package'];
         ?>
-            <?php foreach ($rocksForDoc as $rock):
+            <?php foreach ($rocksForDoc as $rockLoopIdx => $rock):
                 if (!$rock) continue;
                 $rockName    = $rock['name']      ?? 'Mystery Rock';
                 $backstory   = $rock['backstory'] ?? '';
@@ -266,11 +265,12 @@ if ($sessionId) {
                         <?php endif; ?>
                         <button class="btn-dl-cert"
                                 data-tier="<?= $tier ?>"
+                                data-cart-index="<?= htmlspecialchars((string)($ci['index'] ?? '')) ?>"
+                                data-rock-idx="<?= $rockLoopIdx ?>"
                                 data-rock-name="<?= htmlspecialchars($rockName) ?>"
                                 data-display-name="<?= htmlspecialchars($displayName) ?>"
                                 data-backstory="<?= htmlspecialchars($backstory) ?>"
-                                data-rock-img="img/<?= htmlspecialchars($rockImg) ?>"
-                                data-canvas-capture="<?= htmlspecialchars($capture) ?>">
+                                data-rock-img="img/<?= htmlspecialchars($rockImg) ?>">
                             <i class="bi bi-file-earmark-arrow-down"></i>
                             <?= $dlLabel ?>
                         </button>
@@ -331,11 +331,14 @@ async function pdfT1(displayName, rockImg) {
     doc.setLineWidth(0.5);
     doc.roundedRect(12, 12, 186, 273, 2, 2);
 
-    const imgData = await imgToDataUrl(rockImg);
-    if (imgData) {
-        const imgWidth = 150;
-        const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
-        doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 50, imgWidth, imgHeight);
+    // Use canvas capture if available, else fall back to rock photo
+    const rawImg = (canvasCapture && canvasCapture.startsWith('data:'))
+        ? { dataUrl: canvasCapture, naturalWidth: 400, naturalHeight: 300 }
+        : await imgToDataUrl(rockImg);
+    if (rawImg) {
+        const imgWidth = 120;
+        const imgHeight = imgWidth * (rawImg.naturalHeight / rawImg.naturalWidth);
+        doc.addImage(rawImg.dataUrl, 'PNG', (pw - imgWidth) / 2, 54, imgWidth, imgHeight);
     }
 
     doc.setFont('helvetica', 'bold');
@@ -440,7 +443,7 @@ async function pdfT3(displayName, backstory, rockImg, canvasCapture) {
 }
 
 // ── T4: styled adoption certificate ─────────────────────────────
-async function pdfT4(displayName, backstory, rockImg) {
+async function pdfT4(displayName, backstory, rockImg, canvasCapture) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pw = 210, ph = 297;
@@ -478,11 +481,14 @@ async function pdfT4(displayName, backstory, rockImg) {
     doc.setTextColor(122, 111, 96);
     doc.text('Stoned.io Official Adoption Document', pw / 2, 47, { align: 'center' });
 
-    const imgData = await imgToDataUrl(rockImg);
-    if (imgData) {
+    // Use canvas capture if available, else fall back to rock photo
+    const rawImg = (canvasCapture && canvasCapture.startsWith('data:'))
+        ? { dataUrl: canvasCapture, naturalWidth: 400, naturalHeight: 300 }
+        : await imgToDataUrl(rockImg);
+    if (rawImg) {
         const imgWidth = 120;
-        const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
-        doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 54, imgWidth, imgHeight);
+        const imgHeight = imgWidth * (rawImg.naturalHeight / rawImg.naturalWidth);
+        doc.addImage(rawImg.dataUrl, 'PNG', (pw - imgWidth) / 2, 54, imgWidth, imgHeight);
     }
 
     let y = 58 + 120;
@@ -517,14 +523,24 @@ async function pdfT4(displayName, backstory, rockImg) {
 }
 
 // ── Button handler ────────────────────────────────────────────────
+const _storedCaptures = JSON.parse(sessionStorage.getItem('stoned_captures') || '{}');
+function _getCapture(cartIndex, rockIdx, tier) {
+    const entry = _storedCaptures[String(cartIndex)];
+    if (!entry) return '';
+    if (tier === 4 && Array.isArray(entry)) return entry[rockIdx] || '';
+    return typeof entry === 'string' ? entry : '';
+}
+
 document.querySelectorAll('.btn-dl-cert').forEach(btn => {
     btn.addEventListener('click', async () => {
-        const tier          = parseInt(btn.dataset.tier);
+        const tier          = parseInt(btn.dataset.tier, 10);
+        const cartIndex     = btn.dataset.cartIndex || '';
+        const rockIdx       = parseInt(btn.dataset.rockIdx || '0', 10);
         const rockName      = btn.dataset.rockName;
         const displayName   = btn.dataset.displayName;
         const backstory     = btn.dataset.backstory;
         const rockImg       = btn.dataset.rockImg;
-        const canvasCapture = btn.dataset.canvasCapture || '';
+        const canvasCapture = _getCapture(cartIndex, rockIdx, tier);
 
         btn.disabled = true;
         btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating&hellip;';
@@ -534,7 +550,7 @@ document.querySelectorAll('.btn-dl-cert').forEach(btn => {
             if      (tier === 1) doc = await pdfT1(displayName, rockImg);
             else if (tier === 2) doc = await pdfT2(displayName, backstory, rockImg);
             else if (tier === 3) doc = await pdfT3(displayName, backstory, rockImg, canvasCapture);
-            else                 doc = await pdfT4(displayName, backstory, rockImg);
+            else                 doc = await pdfT4(displayName, backstory, rockImg, canvasCapture);
 
             const slug = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
             const prefix = tier === 4 ? 'certificate' : 'rock-doc';

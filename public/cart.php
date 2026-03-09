@@ -259,64 +259,131 @@
                 </div>
 
                 <?php if ($ci['tier'] >= 3): ?>
-                    <!-- ── Customisation Panel (T3+) ── -->
-                    <div class="customise-panel" data-tier="<?= $ci['tier'] ?>" data-cart-index="<?= $ci['index'] ?>">
-                        <h3><i class="bi bi-palette"></i> Customise Your Rock</h3>
-                        <p style="color:#9e9080;font-size:0.82rem;margin-bottom:12px;">Drag &amp; resize rocks and accessories. Click to select, Delete key or button to remove.</p>
+                    <?php if ($ci['tier'] === 4): ?>
+                        <!-- ── T4: Three individual customisation panels (one per stone) ── -->
+                        <p style="color:#c9a96e;font-size:0.85rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:7px;">
+                            <i class="bi bi-gem"></i> Customise each of your 3 stones individually — each gets its own PDF certificate.
+                        </p>
+                        <?php foreach ($ci['rocks'] as $ri => $rock): ?>
+                            <?php $panelAccPrefix = $ci['index'] . 'r' . $ri; ?>
+                            <div class="customise-panel" data-tier="4" data-cart-index="<?= $ci['index'] ?>" data-rock-idx="<?= $ri ?>">
+                                <h3><i class="bi bi-palette"></i> Stone <?= $ri + 1 ?>: <?= htmlspecialchars($rock['name'] ?? 'Mystery Rock') ?></h3>
+                                <p style="color:#9e9080;font-size:0.82rem;margin-bottom:12px;">Drag &amp; resize the stone and accessories. Click to select, Delete key or button to remove.</p>
 
-                        <!-- Toolbar -->
-                        <div class="canvas-toolbar">
-                            <label>Canvas BG:</label>
-                            <div class="bg-swatches">
-                                <button type="button" class="swatch active" data-bg="#0e0c0a" style="background:#0e0c0a" title="Obsidian"></button>
-                                <button type="button" class="swatch" data-bg="#1a2e1a" style="background:#1a2e1a" title="Forest"></button>
-                                <button type="button" class="swatch" data-bg="#1a1a2e" style="background:#1a1a2e" title="Midnight"></button>
-                                <button type="button" class="swatch" data-bg="#2e1a1a" style="background:#2e1a1a" title="Ember"></button>
-                                <button type="button" class="swatch" data-bg="#2a2410" style="background:#2a2410" title="Sand"></button>
-                                <button type="button" class="swatch" data-bg="#f5f0e8" style="background:#f5f0e8" title="Parchment"></button>
+                                <!-- Toolbar -->
+                                <div class="canvas-toolbar">
+                                    <label>Canvas BG:</label>
+                                    <div class="bg-swatches">
+                                        <button type="button" class="swatch active" data-bg="#0e0c0a" style="background:#0e0c0a" title="Obsidian"></button>
+                                        <button type="button" class="swatch" data-bg="#1a2e1a" style="background:#1a2e1a" title="Forest"></button>
+                                        <button type="button" class="swatch" data-bg="#1a1a2e" style="background:#1a1a2e" title="Midnight"></button>
+                                        <button type="button" class="swatch" data-bg="#2e1a1a" style="background:#2e1a1a" title="Ember"></button>
+                                        <button type="button" class="swatch" data-bg="#2a2410" style="background:#2a2410" title="Sand"></button>
+                                        <button type="button" class="swatch" data-bg="#f5f0e8" style="background:#f5f0e8" title="Parchment"></button>
+                                    </div>
+                                    <button type="button" class="btn-del-selected" disabled><i class="bi bi-trash3"></i> Delete</button>
+                                </div>
+
+                                <!-- Canvas -->
+                                <div class="canvas-wrapper">
+                                    <div class="interact-canvas" id="canvas-<?= $ci['index'] ?>-<?= $ri ?>"
+                                         data-rocks='<?= json_encode([$rock], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>'
+                                         data-rock-name="<?= htmlspecialchars($rock['name'] ?? 'Mystery Rock') ?>"
+                                         data-rock-backstory="<?= htmlspecialchars($rock['backstory'] ?? '') ?>">
+                                    </div>
+                                </div>
+
+                                <!-- Accessory Tray -->
+                                <div class="accessory-panel">
+                                    <div class="accessory-tabs">
+                                        <?php $first = true; foreach ($customOptions as $catKey => $catItems): ?>
+                                            <button type="button" class="acc-tab<?= $first ? ' active' : '' ?>"
+                                                    data-cat="acc-<?= $panelAccPrefix ?>-<?= htmlspecialchars($catKey) ?>">
+                                                <?= htmlspecialchars(ucfirst($catKey)) ?>
+                                            </button>
+                                        <?php $first = false; endforeach; ?>
+                                    </div>
+                                    <?php $first = true; foreach ($customOptions as $catKey => $catItems): ?>
+                                        <div class="accessory-tray<?= $first ? ' active' : '' ?>"
+                                             id="acc-<?= $panelAccPrefix ?>-<?= htmlspecialchars($catKey) ?>">
+                                            <?php foreach ($catItems as $acc): ?>
+                                                <div class="acc-item"
+                                                     data-svg="img/<?= htmlspecialchars($acc['image']) ?>"
+                                                     data-acc-name="<?= htmlspecialchars($acc['name']) ?>">
+                                                    <div class="acc-thumb">
+                                                        <img src="img/<?= htmlspecialchars($acc['image']) ?>"
+                                                             alt="<?= htmlspecialchars($acc['name']) ?>"
+                                                             onerror="this.style.display='none';this.parentElement.innerHTML+='<i class=\'bi bi-question-circle\' style=\'color:#5a5046;font-size:1.4rem\'></i>'">
+                                                    </div>
+                                                    <span><?= htmlspecialchars($acc['name']) ?></span>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php $first = false; endforeach; ?>
+                                </div>
+
                             </div>
-                            <button type="button" class="btn-del-selected" disabled><i class="bi bi-trash3"></i> Delete</button>
-                        </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <!-- ── T3: Single customisation panel ── -->
+                        <div class="customise-panel" data-tier="<?= $ci['tier'] ?>" data-cart-index="<?= $ci['index'] ?>">
+                            <h3><i class="bi bi-palette"></i> Customise Your Rock</h3>
+                            <p style="color:#9e9080;font-size:0.82rem;margin-bottom:12px;">Drag &amp; resize rocks and accessories. Click to select, Delete key or button to remove.</p>
 
-                        <!-- Canvas -->
-                        <div class="canvas-wrapper">
-                            <div class="interact-canvas" id="canvas-<?= $ci['index'] ?>"
-                                 data-rocks='<?= json_encode(array_values($ci['rocks']), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>'
-                                 data-rock-name="<?= htmlspecialchars($ci['rocks'][0]['name'] ?? 'Mystery Rock') ?>"
-                                 data-rock-backstory="<?= htmlspecialchars($ci['rocks'][0]['backstory'] ?? '') ?>">
+                            <!-- Toolbar -->
+                            <div class="canvas-toolbar">
+                                <label>Canvas BG:</label>
+                                <div class="bg-swatches">
+                                    <button type="button" class="swatch active" data-bg="#0e0c0a" style="background:#0e0c0a" title="Obsidian"></button>
+                                    <button type="button" class="swatch" data-bg="#1a2e1a" style="background:#1a2e1a" title="Forest"></button>
+                                    <button type="button" class="swatch" data-bg="#1a1a2e" style="background:#1a1a2e" title="Midnight"></button>
+                                    <button type="button" class="swatch" data-bg="#2e1a1a" style="background:#2e1a1a" title="Ember"></button>
+                                    <button type="button" class="swatch" data-bg="#2a2410" style="background:#2a2410" title="Sand"></button>
+                                    <button type="button" class="swatch" data-bg="#f5f0e8" style="background:#f5f0e8" title="Parchment"></button>
+                                </div>
+                                <button type="button" class="btn-del-selected" disabled><i class="bi bi-trash3"></i> Delete</button>
                             </div>
-                        </div>
 
-                        <!-- Accessory Tray -->
-                        <div class="accessory-panel">
-                            <div class="accessory-tabs">
+                            <!-- Canvas -->
+                            <div class="canvas-wrapper">
+                                <div class="interact-canvas" id="canvas-<?= $ci['index'] ?>"
+                                     data-rocks='<?= json_encode(array_values($ci['rocks']), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>'
+                                     data-rock-name="<?= htmlspecialchars($ci['rocks'][0]['name'] ?? 'Mystery Rock') ?>"
+                                     data-rock-backstory="<?= htmlspecialchars($ci['rocks'][0]['backstory'] ?? '') ?>">
+                                </div>
+                            </div>
+
+                            <!-- Accessory Tray -->
+                            <div class="accessory-panel">
+                                <div class="accessory-tabs">
+                                    <?php $first = true; foreach ($customOptions as $catKey => $catItems): ?>
+                                        <button type="button" class="acc-tab<?= $first ? ' active' : '' ?>"
+                                                data-cat="acc-<?= $ci['index'] ?>-<?= htmlspecialchars($catKey) ?>">
+                                            <?= htmlspecialchars(ucfirst($catKey)) ?>
+                                        </button>
+                                    <?php $first = false; endforeach; ?>
+                                </div>
                                 <?php $first = true; foreach ($customOptions as $catKey => $catItems): ?>
-                                    <button type="button" class="acc-tab<?= $first ? ' active' : '' ?>"
-                                            data-cat="acc-<?= $ci['index'] ?>-<?= htmlspecialchars($catKey) ?>">
-                                        <?= htmlspecialchars(ucfirst($catKey)) ?>
-                                    </button>
+                                    <div class="accessory-tray<?= $first ? ' active' : '' ?>"
+                                         id="acc-<?= $ci['index'] ?>-<?= htmlspecialchars($catKey) ?>">
+                                        <?php foreach ($catItems as $acc): ?>
+                                            <div class="acc-item"
+                                                 data-svg="img/<?= htmlspecialchars($acc['image']) ?>"
+                                                 data-acc-name="<?= htmlspecialchars($acc['name']) ?>">
+                                                <div class="acc-thumb">
+                                                    <img src="img/<?= htmlspecialchars($acc['image']) ?>"
+                                                         alt="<?= htmlspecialchars($acc['name']) ?>"
+                                                         onerror="this.style.display='none';this.parentElement.innerHTML+='<i class=\'bi bi-question-circle\' style=\'color:#5a5046;font-size:1.4rem\'></i>'">
+                                                </div>
+                                                <span><?= htmlspecialchars($acc['name']) ?></span>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
                                 <?php $first = false; endforeach; ?>
                             </div>
-                            <?php $first = true; foreach ($customOptions as $catKey => $catItems): ?>
-                                <div class="accessory-tray<?= $first ? ' active' : '' ?>"
-                                     id="acc-<?= $ci['index'] ?>-<?= htmlspecialchars($catKey) ?>">
-                                    <?php foreach ($catItems as $acc): ?>
-                                        <div class="acc-item"
-                                             data-svg="img/<?= htmlspecialchars($acc['image']) ?>"
-                                             data-acc-name="<?= htmlspecialchars($acc['name']) ?>">
-                                            <div class="acc-thumb">
-                                                <img src="img/<?= htmlspecialchars($acc['image']) ?>"
-                                                     alt="<?= htmlspecialchars($acc['name']) ?>"
-                                                     onerror="this.style.display='none';this.parentElement.innerHTML+='<i class=\'bi bi-question-circle\' style=\'color:#5a5046;font-size:1.4rem\'></i>'">
-                                            </div>
-                                            <span><?= htmlspecialchars($acc['name']) ?></span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php $first = false; endforeach; ?>
-                        </div>
 
-                    </div>
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <hr class="section-divider">
@@ -382,14 +449,7 @@
                     <span>Payments are handled securely by <strong>Stripe</strong>. You&rsquo;ll be redirected to complete payment after placing your order.</span>
                 </div>
 
-                <!-- Hidden canvas captures filled by JS on submit (T3 items) -->
-                <?php foreach ($cartDisplay as $ci): ?>
-                    <?php if ($ci['tier'] >= 3): ?>
-                        <input type="hidden"
-                               name="canvas_capture[<?= $ci['index'] ?>]"
-                               id="captureInput-<?= $ci['index'] ?>">
-                    <?php endif; ?>
-                <?php endforeach; ?>
+
 
                 <button type="submit" name="place_order" value="1" class="btn-place-order">
                     <i class="bi bi-lock-fill"></i> Place Order &amp; Pay
@@ -565,33 +625,45 @@
             });
         });
 
-        // ── Form submit: capture T3 canvases before posting ────────────────
+        // ── Form submit: capture canvases to sessionStorage before posting ──
         const orderForm = document.getElementById('orderForm');
         if (orderForm) {
             orderForm.addEventListener('submit', async (e) => {
-                const captures = orderForm.querySelectorAll('input[name^="canvas_capture"]');
-
-                if (!captures.length) return; // nothing to do
+                const panels = document.querySelectorAll('.customise-panel');
+                if (!panels.length) return; // no T3+ items — submit normally
 
                 e.preventDefault();
 
-                // Capture T3 canvases if any
+                const captureMap = {};
                 try {
-                    for (const input of captures) {
-                        const canvasId = input.id.replace('captureInput-', 'canvas-');
-                        const canvasEl = document.getElementById(canvasId);
-                        const wrapEl   = canvasEl?.closest('.canvas-wrapper');
+                    for (const panel of panels) {
+                        const cartIndex = panel.dataset.cartIndex;
+                        const tier      = parseInt(panel.dataset.tier, 10);
+                        const rockIdx   = panel.dataset.rockIdx !== undefined
+                            ? parseInt(panel.dataset.rockIdx, 10) : null;
+                        const wrapEl    = panel.querySelector('.canvas-wrapper');
                         if (!wrapEl) continue;
                         deselectAll();
                         const snap = await html2canvas(wrapEl, {
-                            backgroundColor: null, scale: 2,
-                            useCORS: true, allowTaint: true, logging: false
+                            backgroundColor: wrapEl.style.background || '#0e0c0a',
+                            scale: 2, useCORS: true, allowTaint: true, logging: false
                         });
-                        input.value = snap.toDataURL('image/png');
+                        const dataUrl = snap.toDataURL('image/png');
+
+                        if (tier === 4 && rockIdx !== null) {
+                            if (!Array.isArray(captureMap[cartIndex])) captureMap[cartIndex] = [];
+                            captureMap[cartIndex][rockIdx] = dataUrl;
+                        } else {
+                            captureMap[cartIndex] = dataUrl;
+                        }
                     }
                 } catch (err) {
                     console.warn('Canvas capture failed, continuing anyway:', err);
                 }
+
+                try {
+                    sessionStorage.setItem('stoned_captures', JSON.stringify(captureMap));
+                } catch (_) { /* storage full or blocked — PDF falls back to rock photo */ }
 
                 orderForm.submit();
             });
