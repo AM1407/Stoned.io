@@ -24,8 +24,9 @@ $placedAt     = $order['placed_at']      ?? date('Y-m-d H:i:s');
 $recipName    = $order['recipient_name'] ?? '';
 $giftMsg      = $order['gift_message']   ?? '';
 
-$hasCertItems   = !empty($orderItems);
-$canvasCaptures = $order['canvas_captures'] ?? [];
+$hasCertItems    = !empty($orderItems);
+$canvasCaptures  = $order['canvas_captures'] ?? [];
+$emailAlreadySent = !empty($order['email_sent']);
 
 // ── Payment verification via Stripe Checkout Session ──────────────
 $isPaid    = false;
@@ -153,9 +154,24 @@ if ($sessionId) {
     <div class="confirm-hero">
         <i class="bi bi-check-circle-fill hero-icon"></i>
         <h1>Order Confirmed!</h1>
-        <p>A (very official) confirmation has been sent to <strong><?= htmlspecialchars($orderEmail) ?></strong>.</p>
+        <p>Thank you — your rocks are now officially yours.</p>
         <p class="order-ref"><?= htmlspecialchars($orderRef) ?></p>
         <p style="color:#5a5046; font-size:0.78rem; margin-top:10px;">Placed <?= htmlspecialchars($placedAt) ?></p>
+
+        <?php if ($isPaid): ?>
+        <?php
+            $statusStyle = $emailAlreadySent
+                ? 'display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 18px;border-radius:8px;font-size:0.83rem;justify-content:center;background:rgba(80,200,120,0.08);border:1px solid rgba(80,200,120,0.25);color:#50c878;'
+                : 'display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 18px;border-radius:8px;font-size:0.83rem;justify-content:center;background:rgba(201,169,110,0.07);border:1px solid rgba(201,169,110,0.2);color:#9e9080;';
+        ?>
+        <div id="email-status" style="<?= $statusStyle ?>">
+            <?php if ($emailAlreadySent): ?>
+                <i class="bi bi-envelope-check-fill"></i> Confirmation email sent to <?= htmlspecialchars($orderEmail) ?>.
+            <?php else: ?>
+                <i class="bi bi-hourglass-split"></i> Preparing your confirmation email&hellip;
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- ── Order Summary ── -->
@@ -548,28 +564,32 @@ function _getCapture(cartIndex, rockIdx, tier) {
     return typeof entry === 'string' ? entry : '';
 }
 
+// ── Shared: generate a jsPDF doc from a button's data-* attrs ───
+async function generatePdfDoc(btn) {
+    const tier          = parseInt(btn.dataset.tier, 10);
+    const cartIndex     = btn.dataset.cartIndex || '';
+    const rockIdx       = parseInt(btn.dataset.rockIdx || '0', 10);
+    const displayName   = btn.dataset.displayName;
+    const backstory     = btn.dataset.backstory;
+    const rockImg       = btn.dataset.rockImg;
+    const canvasCapture = _getCapture(cartIndex, rockIdx, tier);
+    if      (tier === 1) return pdfT1(displayName, rockImg);
+    else if (tier === 2) return pdfT2(displayName, backstory, rockImg);
+    else if (tier === 3) return pdfT3(displayName, backstory, rockImg, canvasCapture);
+    else                 return pdfT4(displayName, backstory, rockImg, canvasCapture);
+}
+
 document.querySelectorAll('.btn-dl-cert').forEach(btn => {
     btn.addEventListener('click', async () => {
-        const tier          = parseInt(btn.dataset.tier, 10);
-        const cartIndex     = btn.dataset.cartIndex || '';
-        const rockIdx       = parseInt(btn.dataset.rockIdx || '0', 10);
-        const rockName      = btn.dataset.rockName;
-        const displayName   = btn.dataset.displayName;
-        const backstory     = btn.dataset.backstory;
-        const rockImg       = btn.dataset.rockImg;
-        const canvasCapture = _getCapture(cartIndex, rockIdx, tier);
+        const tier        = parseInt(btn.dataset.tier, 10);
+        const displayName = btn.dataset.displayName;
 
         btn.disabled = true;
         btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating&hellip;';
 
         try {
-            let doc;
-            if      (tier === 1) doc = await pdfT1(displayName, rockImg);
-            else if (tier === 2) doc = await pdfT2(displayName, backstory, rockImg);
-            else if (tier === 3) doc = await pdfT3(displayName, backstory, rockImg, canvasCapture);
-            else                 doc = await pdfT4(displayName, backstory, rockImg, canvasCapture);
-
-            const slug = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            const doc    = await generatePdfDoc(btn);
+            const slug   = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
             const prefix = tier === 4 ? 'certificate' : 'rock-doc';
             doc.save(`stoned-io-${prefix}-${slug}.pdf`);
         } catch (err) {
@@ -581,6 +601,59 @@ document.querySelectorAll('.btn-dl-cert').forEach(btn => {
         }
     });
 });
+
+<?php if ($isPaid && !$emailAlreadySent): ?>
+// ── Auto-send confirmation email with PDFs attached ───────────
+(async function autoSendEmail() {
+    const statusEl = document.getElementById('email-status');
+
+    function setStatus(ok, msg) {
+        if (!statusEl) return;
+        const okStyle   = 'display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 18px;border-radius:8px;font-size:0.83rem;justify-content:center;background:rgba(80,200,120,0.08);border:1px solid rgba(80,200,120,0.25);color:#50c878;';
+        const failStyle = 'display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 18px;border-radius:8px;font-size:0.83rem;justify-content:center;background:rgba(255,94,91,0.07);border:1px solid rgba(255,94,91,0.22);color:#FF5E5B;';
+        statusEl.style.cssText = ok ? okStyle : failStyle;
+        statusEl.innerHTML = msg;
+    }
+
+    // Generate every PDF silently
+    const buttons = Array.from(document.querySelectorAll('.btn-dl-cert'));
+    const pdfs    = [];
+    for (const btn of buttons) {
+        const tier        = parseInt(btn.dataset.tier, 10);
+        const displayName = btn.dataset.displayName;
+        const slug        = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        const prefix      = tier === 4 ? 'certificate' : 'rock-doc';
+        try {
+            const doc = await generatePdfDoc(btn);
+            pdfs.push({ filename: `stoned-io-${prefix}-${slug}.pdf`, data: doc.output('datauristring') });
+        } catch (e) {
+            console.warn('PDF gen for email failed:', displayName, e);
+        }
+    }
+
+    try {
+        const res  = await fetch('send-order-email.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderRef: <?= json_encode($orderRef) ?>, pdfs })
+        });
+        const json = await res.json();
+        if (json.ok && json.message !== 'already_sent') {
+            const pdfNote = pdfs.length ? ' with your PDF(s) attached.' : '.';
+            setStatus(true, '<i class="bi bi-envelope-check-fill"></i> Confirmation email sent to <?= htmlspecialchars($orderEmail, ENT_QUOTES) ?>' + pdfNote);
+        } else if (!json.ok) {
+            setStatus(false, '<i class="bi bi-envelope-exclamation"></i> Could not send confirmation email — download your PDFs below.');
+            console.warn('Email send failed:', json.message);
+        } else {
+            // already_sent — hide spinner
+            if (statusEl) statusEl.style.display = 'none';
+        }
+    } catch (e) {
+        setStatus(false, '<i class="bi bi-envelope-exclamation"></i> Could not send confirmation email — download your PDFs below.');
+        console.warn('Email request error:', e);
+    }
+})();
+<?php endif; ?>
 </script>
 <?php endif; ?>
 
