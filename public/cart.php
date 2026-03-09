@@ -207,6 +207,7 @@
         <?php else: ?>
 
             <form action="cart.php" method="POST" id="orderForm" autocomplete="off">
+            <input type="hidden" name="place_order" value="1">
 
             <?php foreach ($cartDisplay as $ci): ?>
                 <!-- ── Package Banner ── -->
@@ -451,7 +452,7 @@
 
 
 
-                <button type="submit" name="place_order" value="1" class="btn-place-order">
+                <button type="submit" class="btn-place-order">
                     <i class="bi bi-lock-fill"></i> Place Order &amp; Pay
                 </button>
             </form><!-- /orderForm -->
