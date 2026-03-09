@@ -10,6 +10,8 @@
  *   { "orderRef": "ORD-XXXXXXXX", "pdfs": [ { "filename": "...", "data": "data:application/pdf;base64,..." } ] }
  */
 
+ob_start(); // buffer any stray output so JSON response stays clean
+
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -21,6 +23,7 @@ header('Content-Type: application/json');
 // ── Helpers ────────────────────────────────────────────────────────
 function jsonOut(bool $ok, string $message): void
 {
+    ob_clean(); // discard any warnings/notices emitted above
     echo json_encode(['ok' => $ok, 'message' => $message]);
     exit;
 }
@@ -28,6 +31,24 @@ function jsonOut(bool $ok, string $message): void
 // ── Method guard ───────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonOut(false, 'Method not allowed');
+}
+
+// ── post_max_size exceeded? PHP silently empties the body ──────────
+function parseIniBytes(string $val): int {
+    $val  = trim($val);
+    $unit = strtoupper(substr($val, -1));
+    $num  = (int) $val;
+    return match($unit) {
+        'G' => $num * 1024 * 1024 * 1024,
+        'M' => $num * 1024 * 1024,
+        'K' => $num * 1024,
+        default => $num,
+    };
+}
+$contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
+$postMaxBytes  = parseIniBytes(ini_get('post_max_size'));
+if ($contentLength > 0 && $postMaxBytes > 0 && $contentLength > $postMaxBytes) {
+    jsonOut(false, 'Request too large — PDFs will not be attached but email will still send without them');
 }
 
 // ── Session guard ──────────────────────────────────────────────────
