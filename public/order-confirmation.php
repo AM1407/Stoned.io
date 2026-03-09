@@ -320,6 +320,24 @@ function imgToDataUrl(src) {
     });
 }
 
+// ── Get real pixel dimensions of a canvas data-URL ─────────────
+function captureDimensions(dataUrl) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve({ dataUrl, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight });
+        img.onerror = () => resolve(null);
+        img.src = dataUrl;
+    });
+}
+
+// ── Fit image into maxW×maxH box preserving aspect ratio ─────────
+function fitImage(natW, natH, maxW, maxH) {
+    const ratio = natH / natW;
+    let w = maxW, h = maxW * ratio;
+    if (h > maxH) { h = maxH; w = maxH / ratio; }
+    return { w, h };
+}
+
 // ── T1: photo + name only ───────────────────────────────────────
 async function pdfT1(displayName, rockImg) {
     const { jsPDF } = window.jspdf;
@@ -331,14 +349,10 @@ async function pdfT1(displayName, rockImg) {
     doc.setLineWidth(0.5);
     doc.roundedRect(12, 12, 186, 273, 2, 2);
 
-    // Use canvas capture if available, else fall back to rock photo
-    const rawImg = (canvasCapture && canvasCapture.startsWith('data:'))
-        ? { dataUrl: canvasCapture, naturalWidth: 400, naturalHeight: 300 }
-        : await imgToDataUrl(rockImg);
+    const rawImg = await imgToDataUrl(rockImg);
     if (rawImg) {
-        const imgWidth = 120;
-        const imgHeight = imgWidth * (rawImg.naturalHeight / rawImg.naturalWidth);
-        doc.addImage(rawImg.dataUrl, 'PNG', (pw - imgWidth) / 2, 54, imgWidth, imgHeight);
+        const { w: imgWidth, h: imgHeight } = fitImage(rawImg.naturalWidth, rawImg.naturalHeight, 150, 150);
+        doc.addImage(rawImg.dataUrl, 'PNG', (pw - imgWidth) / 2, 50, imgWidth, imgHeight);
     }
 
     doc.setFont('helvetica', 'bold');
@@ -365,27 +379,30 @@ async function pdfT2(displayName, backstory, rockImg) {
     doc.roundedRect(12, 12, 186, 273, 2, 2);
 
     const imgData = await imgToDataUrl(rockImg);
+    let imgBottom = 28;
     if (imgData) {
-        const imgWidth = 130;
-        const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
+        const { w: imgWidth, h: imgHeight } = fitImage(imgData.naturalWidth, imgData.naturalHeight, 155, 130);
         doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 28, imgWidth, imgHeight);
+        imgBottom = 28 + imgHeight;
     }
 
+    const nameY = Math.max(imgBottom + 12, 168);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
     doc.setTextColor(232, 223, 200);
-    doc.text(displayName, pw / 2, 172, { align: 'center' });
+    doc.text(displayName, pw / 2, nameY, { align: 'center' });
 
     doc.setDrawColor(58, 49, 40);
     doc.setLineWidth(0.35);
-    doc.line(25, 177, 185, 177);
+    doc.line(25, nameY + 5, 185, nameY + 5);
 
     if (backstory) {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(8.5);
         doc.setTextColor(158, 144, 128);
         const lines = doc.splitTextToSize(backstory, 162);
-        doc.text(lines.slice(0, 18), 24, 185);
+        const maxLines = Math.floor((270 - nameY - 13) / 4.2);
+        doc.text(lines.slice(0, Math.max(0, maxLines)), 24, nameY + 13);
     }
 
     doc.setFont('helvetica', 'normal');
@@ -407,17 +424,16 @@ async function pdfT3(displayName, backstory, rockImg, canvasCapture) {
     doc.roundedRect(12, 12, 186, 273, 2, 2);
 
     // Use canvas capture if available, else fall back to rock photo
-    let imgData = (canvasCapture && canvasCapture.startsWith('data:'))
-        ? { dataUrl: canvasCapture, naturalWidth: 400, naturalHeight: 300 }
+    const imgData = (canvasCapture && canvasCapture.startsWith('data:'))
+        ? await captureDimensions(canvasCapture)
         : await imgToDataUrl(rockImg);
 
-    const imgWidth = 164;
-    const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
+    let imgBottom = 22;
     if (imgData) {
+        const { w: imgWidth, h: imgHeight } = fitImage(imgData.naturalWidth, imgData.naturalHeight, 170, 110);
         doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 22, imgWidth, imgHeight);
+        imgBottom = 22 + imgHeight;
     }
-
-    const imgBottom = 22 + 164 * (2 / 3);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
     doc.setTextColor(232, 223, 200);
@@ -483,15 +499,16 @@ async function pdfT4(displayName, backstory, rockImg, canvasCapture) {
 
     // Use canvas capture if available, else fall back to rock photo
     const rawImg = (canvasCapture && canvasCapture.startsWith('data:'))
-        ? { dataUrl: canvasCapture, naturalWidth: 400, naturalHeight: 300 }
+        ? await captureDimensions(canvasCapture)
         : await imgToDataUrl(rockImg);
+    let imgEndY = 54;
     if (rawImg) {
-        const imgWidth = 120;
-        const imgHeight = imgWidth * (rawImg.naturalHeight / rawImg.naturalWidth);
+        const { w: imgWidth, h: imgHeight } = fitImage(rawImg.naturalWidth, rawImg.naturalHeight, 150, 90);
         doc.addImage(rawImg.dataUrl, 'PNG', (pw - imgWidth) / 2, 54, imgWidth, imgHeight);
+        imgEndY = 54 + imgHeight;
     }
 
-    let y = 58 + 120;
+    let y = imgEndY + 6;
     doc.setDrawColor(58, 49, 40); doc.setLineWidth(0.4);
     doc.line(25, y, 185, y); y += 8;
 
