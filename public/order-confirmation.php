@@ -306,11 +306,15 @@ function imgToDataUrl(src) {
         img.crossOrigin = 'anonymous';
         img.onload = () => {
             const c = document.createElement('canvas');
-            c.width  = img.naturalWidth  || 400;
-            c.height = img.naturalHeight || 400;
+            c.width  = img.naturalWidth;
+            c.height = img.naturalHeight;
             c.getContext('2d').drawImage(img, 0, 0);
-            resolve(c.toDataURL('image/png'));
-        };
+            resolve({
+                dataUrl: c.toDataURL('image/png'),
+                naturalWidth: img.naturalWidth,
+                naturalHeight: img.naturalHeight
+        });
+    };
         img.onerror = () => resolve(null);
         img.src = src;
     });
@@ -329,7 +333,9 @@ async function pdfT1(displayName, rockImg) {
 
     const imgData = await imgToDataUrl(rockImg);
     if (imgData) {
-        doc.addImage(imgData, 'PNG', (pw - 150) / 2, 50, 150, 150);
+        const imgWidth = 150;
+        const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
+        doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 50, imgWidth, imgHeight);
     }
 
     doc.setFont('helvetica', 'bold');
@@ -357,7 +363,9 @@ async function pdfT2(displayName, backstory, rockImg) {
 
     const imgData = await imgToDataUrl(rockImg);
     if (imgData) {
-        doc.addImage(imgData, 'PNG', (pw - 130) / 2, 28, 130, 130);
+        const imgWidth = 130;
+        const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
+        doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 28, imgWidth, imgHeight);
     }
 
     doc.setFont('helvetica', 'bold');
@@ -396,14 +404,14 @@ async function pdfT3(displayName, backstory, rockImg, canvasCapture) {
     doc.roundedRect(12, 12, 186, 273, 2, 2);
 
     // Use canvas capture if available, else fall back to rock photo
-    const imgData = (canvasCapture && canvasCapture.startsWith('data:'))
-        ? canvasCapture
+    let imgData = (canvasCapture && canvasCapture.startsWith('data:'))
+        ? { dataUrl: canvasCapture, naturalWidth: 400, naturalHeight: 300 }
         : await imgToDataUrl(rockImg);
 
+    const imgWidth = 164;
+    const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
     if (imgData) {
-        const imgW = 164;
-        const imgH = imgW * (2 / 3); // canvas is roughly 3:2 landscape
-        doc.addImage(imgData, 'PNG', (pw - imgW) / 2, 22, imgW, imgH);
+        doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 22, imgWidth, imgHeight);
     }
 
     const imgBottom = 22 + 164 * (2 / 3);
@@ -472,7 +480,9 @@ async function pdfT4(displayName, backstory, rockImg) {
 
     const imgData = await imgToDataUrl(rockImg);
     if (imgData) {
-        doc.addImage(imgData, 'PNG', (pw - 120) / 2, 54, 120, 120);
+        const imgWidth = 120;
+        const imgHeight = imgWidth * (imgData.naturalHeight / imgData.naturalWidth);
+        doc.addImage(imgData.dataUrl, 'PNG', (pw - imgWidth) / 2, 54, imgWidth, imgHeight);
     }
 
     let y = 58 + 120;
