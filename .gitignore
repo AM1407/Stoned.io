@@ -6,6 +6,7 @@
 
 # Runtime data
 src/paid_orders.json
+storage/pdfs/
 
 # OS / editor junk
 .DS_Store

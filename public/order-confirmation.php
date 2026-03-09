@@ -615,19 +615,28 @@ document.querySelectorAll('.btn-dl-cert').forEach(btn => {
         statusEl.innerHTML = msg;
     }
 
-    // Generate every PDF silently
+    // Generate every PDF and upload to server one at a time
     const buttons = Array.from(document.querySelectorAll('.btn-dl-cert'));
-    const pdfs    = [];
+    let uploadCount = 0;
     for (const btn of buttons) {
         const tier        = parseInt(btn.dataset.tier, 10);
         const displayName = btn.dataset.displayName;
         const slug        = displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         const prefix      = tier === 4 ? 'certificate' : 'rock-doc';
+        const filename    = `stoned-io-${prefix}-${slug}.pdf`;
         try {
-            const doc = await generatePdfDoc(btn);
-            pdfs.push({ filename: `stoned-io-${prefix}-${slug}.pdf`, data: doc.output('datauristring') });
+            const doc  = await generatePdfDoc(btn);
+            const data = doc.output('datauristring');
+            const up   = await fetch('save-pdf.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderRef: <?= json_encode($orderRef) ?>, filename, data })
+            });
+            const upJson = await up.json();
+            if (upJson.ok) uploadCount++;
+            else console.warn('PDF save failed:', displayName, upJson.message);
         } catch (e) {
-            console.warn('PDF gen for email failed:', displayName, e);
+            console.warn('PDF upload error:', displayName, e);
         }
     }
 
@@ -635,12 +644,18 @@ document.querySelectorAll('.btn-dl-cert').forEach(btn => {
         const res  = await fetch('send-order-email.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderRef: <?= json_encode($orderRef) ?>, pdfs })
+            body: JSON.stringify({ orderRef: <?= json_encode($orderRef) ?> })
         });
-        const json = await res.json();
+        const text = await res.text();
+        let json;
+        try { json = JSON.parse(text); } catch (_) {
+            console.warn('Email endpoint returned non-JSON:', text.substring(0, 500));
+            setStatus(false, '<i class="bi bi-envelope-exclamation"></i> Could not send confirmation email — download your PDFs below.');
+            return;
+        }
         if (json.ok && json.message !== 'already_sent') {
-            const pdfNote = pdfs.length ? ' with your PDF(s) attached.' : '.';
-            setStatus(true, '<i class="bi bi-envelope-check-fill"></i> Confirmation email sent to <?= htmlspecialchars($orderEmail, ENT_QUOTES) ?>' + pdfNote);
+            const pdfNote = uploadCount > 0 ? ' with your PDF(s) attached.' : '.';
+            setStatus(true, `<i class="bi bi-envelope-check-fill"></i> Confirmation email sent to <?= htmlspecialchars($orderEmail, ENT_QUOTES) ?>${pdfNote}`);
         } else if (!json.ok) {
             setStatus(false, '<i class="bi bi-envelope-exclamation"></i> Could not send confirmation email — download your PDFs below.');
             console.warn('Email send failed:', json.message);

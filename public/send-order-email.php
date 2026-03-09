@@ -3,11 +3,11 @@
  * send-order-email.php — Stoned.io
  *
  * POSTed to via fetch() from order-confirmation.php once payment is
- * confirmed.  Receives base64-encoded PDF data URLs, attaches them,
- * and sends an order-confirmation email via PHPMailer / SMTP.
+ * confirmed.  Reads the order from the session and sends an HTML
+ * confirmation email via PHPMailer / SMTP.
  *
  * Expected JSON body:
- *   { "orderRef": "ORD-XXXXXXXX", "pdfs": [ { "filename": "...", "data": "data:application/pdf;base64,..." } ] }
+ *   { "orderRef": "ORD-XXXXXXXX" }
  */
 
 ob_start(); // buffer any stray output so JSON response stays clean
@@ -33,24 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonOut(false, 'Method not allowed');
 }
 
-// ── post_max_size exceeded? PHP silently empties the body ──────────
-function parseIniBytes(string $val): int {
-    $val  = trim($val);
-    $unit = strtoupper(substr($val, -1));
-    $num  = (int) $val;
-    return match($unit) {
-        'G' => $num * 1024 * 1024 * 1024,
-        'M' => $num * 1024 * 1024,
-        'K' => $num * 1024,
-        default => $num,
-    };
-}
-$contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
-$postMaxBytes  = parseIniBytes(ini_get('post_max_size'));
-if ($contentLength > 0 && $postMaxBytes > 0 && $contentLength > $postMaxBytes) {
-    jsonOut(false, 'Request too large — PDFs will not be attached but email will still send without them');
-}
-
 // ── Session guard ──────────────────────────────────────────────────
 if (empty($_SESSION['last_order'])) {
     jsonOut(false, 'No active order in session');
@@ -61,14 +43,12 @@ if (!empty($_SESSION['last_order']['email_sent'])) {
     jsonOut(true, 'already_sent');
 }
 
-// ── Parse body ─────────────────────────────────────────────────────
+// ── Parse body (just the order ref is needed — no PDF data) ─────────
 $raw  = file_get_contents('php://input');
 $body = json_decode($raw, true);
 if (!is_array($body)) {
     jsonOut(false, 'Invalid JSON body');
 }
-
-$pdfs = $body['pdfs'] ?? [];   // [{filename, data}]
 
 // ── Pull order from session ────────────────────────────────────────
 $order      = $_SESSION['last_order'];
@@ -83,6 +63,12 @@ $giftMsg    = $order['gift_message']   ?? '';
 if (empty($orderEmail) || !filter_var($orderEmail, FILTER_VALIDATE_EMAIL)) {
     jsonOut(false, 'No valid recipient email');
 }
+
+// ── Find saved PDFs for this order ────────────────────────────────
+$safeRefDir  = preg_replace('/[^a-zA-Z0-9\-_]/', '', $orderRef);
+$storageDir  = __DIR__ . '/../storage/pdfs/' . $safeRefDir;
+$savedPdfs   = is_dir($storageDir) ? glob($storageDir . '/*.pdf') : [];
+if ($savedPdfs === false) { $savedPdfs = []; }
 
 // ── Load environment variables ─────────────────────────────────────
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
@@ -127,9 +113,9 @@ if ($recipName) {
         </p>";
 }
 
-$pdfNote = !empty($pdfs)
+$pdfNote = !empty($savedPdfs)
     ? "<p style='margin-top:16px;font-size:0.85rem;color:#9e9080;'>Your personalised rock document(s) are attached to this email.</p>"
-    : '';
+    : "<p style='margin-top:16px;font-size:0.85rem;color:#9e9080;'>Your personalised rock documents are ready to download from the order confirmation page.</p>";
 
 $safeEmail = htmlspecialchars($orderEmail);
 $safeRef   = htmlspecialchars($orderRef);
@@ -214,33 +200,22 @@ try {
     $mail->Subject = "Your Stoned.io Order \xe2\x80\x94 {$orderRef}";
     $mail->Body    = $html;
     $mail->AltBody = "Order confirmed! Ref: {$orderRef} | Total: {$orderTotal}\xe2\x82\xac\n"
-                   . "Download your documents from the order-confirmation page.";
+                   . (empty($savedPdfs) ? 'Download your documents from the order-confirmation page.' : 'Your rock documents are attached to this email.');
 
-    // ── Attach PDFs ───────────────────────────────────────────────
-    $prefix = 'data:application/pdf;base64,';
-    foreach ($pdfs as $item) {
-        $filename = preg_replace('/[^a-zA-Z0-9\-_\.]/', '_', $item['filename'] ?? 'rock-doc.pdf');
-        $dataUrl  = $item['data'] ?? '';
-
-        if (strncmp($dataUrl, $prefix, strlen($prefix)) !== 0) {
-            continue; // skip anything that isn't a PDF data URI
-        }
-
-        $b64       = substr($dataUrl, strlen($prefix));
-        $binaryPdf = base64_decode($b64, true);
-        if ($binaryPdf === false) {
-            continue;
-        }
-
-        $mail->addStringAttachment(
-            $binaryPdf,
-            $filename,
-            PHPMailer::ENCODING_BASE64,
-            'application/pdf'
-        );
+    // ── Attach saved PDFs ─────────────────────────────────────────
+    foreach ($savedPdfs as $pdfPath) {
+        $mail->addAttachment($pdfPath);
     }
 
     $mail->send();
+
+    // ── Clean up PDFs from disk — no reason to keep them after sending ──
+    foreach ($savedPdfs as $pdfPath) {
+        @unlink($pdfPath);
+    }
+    if (is_dir($storageDir) && count(glob($storageDir . '/*')) === 0) {
+        @rmdir($storageDir);
+    }
 
     // Mark as sent in session so we don't resend on refresh
     $_SESSION['last_order']['email_sent'] = true;
