@@ -33,7 +33,8 @@ It's the perfect gift for someone who has everything — because now they can al
 | Backend     | PHP 8+ with Composer (PSR-4)       |
 | Frontend    | Vanilla HTML/CSS, Bootstrap Icons  |
 | Font        | DM Sans (Google Fonts)             |
-| Payments    | Stripe *(coming soon)*             |
+| Payments    | Stripe Checkout                    |
+| Webhook     | Stripe Webhook Handler            |
 | Tips/Support| Ko-fi *(coming soon)*              |
 
 ## 📁 Project Structure
@@ -45,6 +46,8 @@ wackywebshop/
 │   ├── about.php       # The legendary origin story
 │   ├── contact.php     # Get in touch (or don't)
 │   ├── reroute.php     # Social media redirect (surprise!)
+│   ├── checkout.php    # Stripe Checkout integration
+│   ├── webhook.php     # Stripe Webhook handler
 │   ├── style.css       # Global styles
 │   └── ...             # Legal pages, assets
 ├── src/                # PHP classes (PSR-4 autoloaded)
@@ -72,11 +75,12 @@ wackywebshop/
 - [x] About page with origin story
 - [x] Contact page
 - [x] Footer with legally questionable disclaimer
-- [ ] Stripe integration for payments
+- [x] Stripe integration for payments ✅
+- [x] Shopping basket functionality ✅
+- [x] Order confirmation emails (with rock PDFs) ✅
+- [x] Rock customisation for tier 3+ ✅
+- [x] Stripe webhook integration ✅
 - [ ] Ko-fi integration for tips & support
-- [ ] Shopping basket functionality
-- [ ] Order confirmation emails (with your rock attached)
-- [ ] Rock customisation for tier 3+
 
 ## � Future Possibilities
 

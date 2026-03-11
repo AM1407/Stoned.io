@@ -62,6 +62,9 @@ try {
         'cancel_url'           => $baseUrl . '/cart.php',
         'metadata'             => [
             'order_ref' => $order['ref'] ?? '',
+            'total_amount' => $order['total'] ?? 0,
+            'items_count' => count($order['items'] ?? []),
+            'placed_at' => $order['placed_at'] ?? date('Y-m-d H:i:s'),
         ],
     ]);
 
